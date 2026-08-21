@@ -2,6 +2,7 @@ package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.Categoria;
 import br.com.VixLegen.ProjetoVixLegen10.Service.CategoriaService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<Categoria> cadastrar(
-            @RequestBody Categoria categoria) {
+            @Valid @RequestBody Categoria categoria) {
 
         return ResponseEntity.ok(
                 categoriaService.cadastrar(categoria)
@@ -45,7 +46,7 @@ public class CategoriaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Categoria> atualizar(
-            @PathVariable Long id,
+            @Valid @PathVariable Long id,
             @RequestBody Categoria categoria) {
 
         return ResponseEntity.ok(
