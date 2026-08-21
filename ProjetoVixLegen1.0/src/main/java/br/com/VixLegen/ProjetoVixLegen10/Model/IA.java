@@ -1,0 +1,28 @@
+package br.com.VixLegen.ProjetoVixLegen10.Model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "IA")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class IA {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idAnalise;
+
+    private String previsaoTempoJulgamento;
+    private Double probabilidadeSucesso;
+    private Double nivelConfianca;
+    private String sugestoes;
+    private String padroesEncontrados;
+
+
+}
