@@ -1,8 +1,9 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.ParteEnvolvida;
+import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ParteEnvolvidaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,34 +11,77 @@ import java.util.List;
 @Service
 public class ParteEnvolvidaService {
 
-    @Autowired
-    private ParteEnvolvidaRepository repository;
+    private final ParteEnvolvidaRepository parteRepository;
+    private final ProcessoJuridicoRepository processoRepository;
 
-    public ParteEnvolvida cadastrar(ParteEnvolvida parte){
-        return repository.save(parte);
+    public ParteEnvolvidaService(
+            ParteEnvolvidaRepository parteRepository,
+            ProcessoJuridicoRepository processoRepository) {
+
+        this.parteRepository = parteRepository;
+        this.processoRepository = processoRepository;
     }
 
-    public List<ParteEnvolvida> listar(){
-        return repository.findAll();
+    // CREATE
+    public ParteEnvolvida cadastrar(ParteEnvolvida parte) {
+
+        ProcessoJuridico processo = processoRepository.findById(
+                parte.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
+
+        parte.setProcesso(processo);
+
+        return parteRepository.save(parte);
     }
 
-    public ParteEnvolvida buscarPorId(Long id){
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Parte Não Encontrada"));
+    // READ - todos
+    public List<ParteEnvolvida> listarTodos() {
+        return parteRepository.findAll();
     }
 
-    public ParteEnvolvida atualizar(Long id, ParteEnvolvida dados){
-        ParteEnvolvida parte = buscarPorId(id);
+    // READ - por ID
+    public ParteEnvolvida buscarPorId(Long id) {
 
-        parte.setPosicaoCliente(dados.getPosicaoCliente());
-        parte.setParteContraria(dados.getParteContraria());
-        parte.setAdvogadoContrario(dados.getAdvogadoContrario());
-        parte.setJuizResponsavel(dados.getJuizResponsavel());
-
-        return repository.save(parte);
+        return parteRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Parte envolvida não encontrada"));
     }
 
-    public void excluir(Long id){
-        ParteEnvolvida parte = buscarPorId(id);
-        repository.delete(parte);
+    // UPDATE
+    public ParteEnvolvida atualizar(
+            Long id,
+            ParteEnvolvida parte) {
+
+        ParteEnvolvida existente =
+                parteRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Parte envolvida não encontrada"));
+
+        ProcessoJuridico processo = processoRepository.findById(
+                parte.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
+
+        existente.setPosicaoCliente(parte.getPosicaoCliente());
+        existente.setParteContraria(parte.getParteContraria());
+        existente.setAdvogadoContrario(parte.getAdvogadoContrario());
+        existente.setJuizResponsavel(parte.getJuizResponsavel());
+        existente.setProcesso(processo);
+
+        return parteRepository.save(existente);
+    }
+
+    // DELETE
+    public void excluir(Long id) {
+
+        ParteEnvolvida parte =
+                parteRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Parte envolvida não encontrada"));
+
+        parteRepository.delete(parte);
     }
 }

@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "clientes")
 @Getter
@@ -28,4 +31,6 @@ public class Cliente {
     @NotNull
     private String cpf;
 
+    @OneToMany(mappedBy = "cliente")
+    private List<ProcessoJuridico> processos = new ArrayList<>();
 }

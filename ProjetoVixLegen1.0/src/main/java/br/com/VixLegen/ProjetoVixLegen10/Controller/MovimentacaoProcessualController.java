@@ -2,48 +2,66 @@ package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.MovimentacaoProcessual;
 import br.com.VixLegen.ProjetoVixLegen10.Service.MovimentacaoProcessualService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/movimentacoes-processuais")
+@RequestMapping("/movimentacoes")
 public class MovimentacaoProcessualController {
 
-    @Autowired
-    private MovimentacaoProcessualService service;
+    private final MovimentacaoProcessualService movimentacaoService;
+
+    public MovimentacaoProcessualController(
+            MovimentacaoProcessualService movimentacaoService) {
+
+        this.movimentacaoService = movimentacaoService;
+    }
 
     @PostMapping
-    public MovimentacaoProcessual cadastrar(
-            @RequestBody MovimentacaoProcessual movimentacao) {
+    public ResponseEntity<MovimentacaoProcessual> cadastrar(
+            @Valid @RequestBody MovimentacaoProcessual movimentacao) {
 
-        return service.cadastrar(movimentacao);
+        return ResponseEntity.ok(
+                movimentacaoService.cadastrar(movimentacao)
+        );
     }
 
     @GetMapping
-    public List<MovimentacaoProcessual> listar() {
-        return service.listar();
+    public ResponseEntity<List<MovimentacaoProcessual>> listarTodos() {
+
+        return ResponseEntity.ok(
+                movimentacaoService.listarTodos()
+        );
     }
 
     @GetMapping("/{id}")
-    public MovimentacaoProcessual buscarPorId(
+    public ResponseEntity<MovimentacaoProcessual> buscarPorId(
             @PathVariable Long id) {
 
-        return service.buscarPorId(id);
+        return ResponseEntity.ok(
+                movimentacaoService.buscarPorId(id)
+        );
     }
 
     @PutMapping("/{id}")
-    public MovimentacaoProcessual atualizar(
+    public ResponseEntity<MovimentacaoProcessual> atualizar(
             @PathVariable Long id,
-            @RequestBody MovimentacaoProcessual movimentacao) {
+            @Valid @RequestBody MovimentacaoProcessual movimentacao) {
 
-        return service.atualizar(id, movimentacao);
+        return ResponseEntity.ok(
+                movimentacaoService.atualizar(id, movimentacao)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable Long id) {
 
-        service.excluir(id);
+        movimentacaoService.excluir(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

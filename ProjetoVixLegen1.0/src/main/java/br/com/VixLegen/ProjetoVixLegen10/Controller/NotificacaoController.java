@@ -2,7 +2,8 @@ package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.Notificacao;
 import br.com.VixLegen.ProjetoVixLegen10.Service.NotificacaoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,36 +12,54 @@ import java.util.List;
 @RequestMapping("/notificacoes")
 public class NotificacaoController {
 
-    @Autowired
-    private NotificacaoService service;
+    private final NotificacaoService notificacaoService;
+
+    public NotificacaoController(NotificacaoService notificacaoService) {
+        this.notificacaoService = notificacaoService;
+    }
 
     @PostMapping
-    public Notificacao cadastrar(
-            @RequestBody Notificacao notificacao) {
+    public ResponseEntity<Notificacao> cadastrar(
+            @Valid @RequestBody Notificacao notificacao) {
 
-        return service.cadastrar(notificacao);
+        return ResponseEntity.ok(
+                notificacaoService.cadastrar(notificacao)
+        );
     }
 
     @GetMapping
-    public List<Notificacao> listar() {
-        return service.listar();
+    public ResponseEntity<List<Notificacao>> listarTodos() {
+
+        return ResponseEntity.ok(
+                notificacaoService.listarTodos()
+        );
     }
 
     @GetMapping("/{id}")
-    public Notificacao buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public ResponseEntity<Notificacao> buscarPorId(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                notificacaoService.buscarPorId(id)
+        );
     }
 
     @PutMapping("/{id}")
-    public Notificacao atualizar(
+    public ResponseEntity<Notificacao> atualizar(
             @PathVariable Long id,
-            @RequestBody Notificacao notificacao) {
+            @Valid @RequestBody Notificacao notificacao) {
 
-        return service.atualizar(id, notificacao);
+        return ResponseEntity.ok(
+                notificacaoService.atualizar(id, notificacao)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
-        service.excluir(id);
+    public ResponseEntity<Void> excluir(
+            @PathVariable Long id) {
+
+        notificacaoService.excluir(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

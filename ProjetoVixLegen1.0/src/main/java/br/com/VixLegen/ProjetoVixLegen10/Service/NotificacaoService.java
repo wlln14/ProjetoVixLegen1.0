@@ -1,8 +1,9 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.Notificacao;
+import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.NotificacaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,39 +11,73 @@ import java.util.List;
 @Service
 public class NotificacaoService {
 
-    @Autowired
-    private NotificacaoRepository repository;
+    private final NotificacaoRepository notificacaoRepository;
+    private final UsuarioRepository usuarioRepository;
 
+    public NotificacaoService(
+            NotificacaoRepository notificacaoRepository,
+            UsuarioRepository usuarioRepository) {
+
+        this.notificacaoRepository = notificacaoRepository;
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    // CREATE
     public Notificacao cadastrar(Notificacao notificacao) {
-        return repository.save(notificacao);
+
+        Usuario usuario = usuarioRepository.findById(
+                notificacao.getUsuario().getIdUsuario()
+        ).orElseThrow(() ->
+                new RuntimeException("Usuário não encontrado"));
+
+        notificacao.setUsuario(usuario);
+
+        return notificacaoRepository.save(notificacao);
     }
 
-    public List<Notificacao> listar() {
-        return repository.findAll();
+    // READ
+    public List<Notificacao> listarTodos() {
+        return notificacaoRepository.findAll();
     }
 
+    // READ por ID
     public Notificacao buscarPorId(Long id) {
-        return repository.findById(id)
+
+        return notificacaoRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Notificação não encontrada"));
     }
 
-    public Notificacao atualizar(Long id, Notificacao dados) {
+    // UPDATE
+    public Notificacao atualizar(
+            Long id,
+            Notificacao notificacao) {
 
-        Notificacao notificacao = buscarPorId(id);
+        Notificacao existente = notificacaoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Notificação não encontrada"));
 
-        notificacao.setMensagem(dados.getMensagem());
-        notificacao.setDataEnvio(dados.getDataEnvio());
-        notificacao.setCanal(dados.getCanal());
-        notificacao.setStatus(dados.getStatus());
+        Usuario usuario = usuarioRepository.findById(
+                notificacao.getUsuario().getIdUsuario()
+        ).orElseThrow(() ->
+                new RuntimeException("Usuário não encontrado"));
 
-        return repository.save(notificacao);
+        existente.setMensagem(notificacao.getMensagem());
+        existente.setDataEnvio(notificacao.getDataEnvio());
+        existente.setCanal(notificacao.getCanal());
+        existente.setStatus(notificacao.getStatus());
+        existente.setUsuario(usuario);
+
+        return notificacaoRepository.save(existente);
     }
 
+    // DELETE
     public void excluir(Long id) {
 
-        Notificacao notificacao = buscarPorId(id);
+        Notificacao notificacao = notificacaoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Notificação não encontrada"));
 
-        repository.delete(notificacao);
+        notificacaoRepository.delete(notificacao);
     }
 }

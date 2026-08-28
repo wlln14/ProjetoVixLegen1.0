@@ -3,6 +3,7 @@ package br.com.VixLegen.ProjetoVixLegen10.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,7 @@ public class Usuario {
 
     @NotBlank
     @Email
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotBlank
@@ -40,10 +41,12 @@ public class Usuario {
     @NotBlank
     private String telefone;
 
-    @Column(unique = true)
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String cpf;
 
-    @Column(unique = true)
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String rg;
 
     @NotBlank
@@ -52,7 +55,7 @@ public class Usuario {
     @NotBlank
     private String numeroOAB;
 
-    @NotBlank
+    @NotNull
     private LocalDate dataNascimento;
 
     @NotBlank
@@ -65,4 +68,8 @@ public class Usuario {
     private String cep;
 
     private boolean ativo;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
 }

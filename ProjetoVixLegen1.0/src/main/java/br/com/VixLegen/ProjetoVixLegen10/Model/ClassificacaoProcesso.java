@@ -23,4 +23,8 @@ public class ClassificacaoProcesso {
     private String tipoAcao;
     private String faseProcessual;
     private String descricaoObjeto;
+
+    @OneToOne
+    @JoinColumn(name = "processo_id", nullable = false)
+    private ProcessoJuridico processo;
 }

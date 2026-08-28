@@ -23,6 +23,7 @@ public class ParteEnvolvida {
     private String advogadoContrario;
     private String juizResponsavel;
 
-
-
+    @ManyToOne
+    @JoinColumn(name = "processo_id", nullable = false)
+    private ProcessoJuridico processo;
 }

@@ -2,7 +2,9 @@ package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.IA;
 import br.com.VixLegen.ProjetoVixLegen10.Service.IAService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,39 +13,54 @@ import java.util.List;
 @RequestMapping("/inteligencia-artificial")
 public class IAController {
 
-    @Autowired
-    private IAService service;
+    private final IAService analiseService;
+
+    public IAController(IAService analiseService) {
+        this.analiseService = analiseService;
+    }
 
     @PostMapping
-    public IA cadastrar(
-            @RequestBody IA analise) {
+    public ResponseEntity<IA> cadastrar(
+            @Valid @RequestBody IA analise) {
 
-        return service.cadastrar(analise);
+        return ResponseEntity.ok(
+                analiseService.cadastrar(analise)
+        );
     }
 
     @GetMapping
-    public List<IA> listar() {
-        return service.listar();
+    public ResponseEntity<List<IA>> listarTodos() {
+
+        return ResponseEntity.ok(
+                analiseService.listarTodos()
+        );
     }
 
     @GetMapping("/{id}")
-    public IA buscarPorId(
+    public ResponseEntity<IA> buscarPorId(
             @PathVariable Long id) {
 
-        return service.buscarPorId(id);
+        return ResponseEntity.ok(
+                analiseService.buscarPorId(id)
+        );
     }
 
     @PutMapping("/{id}")
-    public IA atualizar(
+    public ResponseEntity<IA> atualizar(
             @PathVariable Long id,
-            @RequestBody IA analise) {
+            @Valid @RequestBody IA analise) {
 
-        return service.atualizar(id, analise);
+        return ResponseEntity.ok(
+                analiseService.atualizar(id, analise)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable Long id) {
 
-        service.excluir(id);
+        analiseService.excluir(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,48 +1,89 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.ClassificacaoProcesso;
+import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClassificacaoProcessoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ClassificacaoProcessoService {
-    @Autowired
-    private ClassificacaoProcessoRepository repository;
 
-    public ClassificacaoProcesso cadastrar(ClassificacaoProcesso classificacao) {
-        return repository.save(classificacao);
+    private final ClassificacaoProcessoRepository classificacaoRepository;
+    private final ProcessoJuridicoRepository processoRepository;
+
+    public ClassificacaoProcessoService(
+            ClassificacaoProcessoRepository classificacaoRepository,
+            ProcessoJuridicoRepository processoRepository) {
+
+        this.classificacaoRepository = classificacaoRepository;
+        this.processoRepository = processoRepository;
     }
 
-    public List<ClassificacaoProcesso> listar() {
-        return repository.findAll();
+    // CREATE
+    public ClassificacaoProcesso cadastrar(
+            ClassificacaoProcesso classificacao) {
+
+        ProcessoJuridico processo = processoRepository.findById(
+                classificacao.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
+
+        classificacao.setProcesso(processo);
+
+        return classificacaoRepository.save(classificacao);
     }
 
+    // READ - todos
+    public List<ClassificacaoProcesso> listarTodos() {
+        return classificacaoRepository.findAll();
+    }
+
+    // READ - por ID
     public ClassificacaoProcesso buscarPorId(Long id) {
-        return repository.findById(id)
+
+        return classificacaoRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Classificação não encontrada"));
     }
 
+    // UPDATE
     public ClassificacaoProcesso atualizar(
             Long id,
-            ClassificacaoProcesso dados) {
+            ClassificacaoProcesso classificacao) {
 
-        ClassificacaoProcesso classificacao = buscarPorId(id);
+        ClassificacaoProcesso existente =
+                classificacaoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Classificação não encontrada"));
 
-        classificacao.setStatus(dados.getStatus());
-        classificacao.setAreaDireito(dados.getAreaDireito());
-        classificacao.setTipoAcao(dados.getTipoAcao());
-        classificacao.setFaseProcessual(dados.getFaseProcessual());
-        classificacao.setDescricaoObjeto(dados.getDescricaoObjeto());
+        ProcessoJuridico processo = processoRepository.findById(
+                classificacao.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
 
-        return repository.save(classificacao);
+        existente.setStatus(classificacao.getStatus());
+        existente.setAreaDireito(classificacao.getAreaDireito());
+        existente.setTipoAcao(classificacao.getTipoAcao());
+        existente.setFaseProcessual(classificacao.getFaseProcessual());
+        existente.setDescricaoObjeto(classificacao.getDescricaoObjeto());
+        existente.setProcesso(processo);
+
+        return classificacaoRepository.save(existente);
     }
 
+    // DELETE
     public void excluir(Long id) {
-        ClassificacaoProcesso classificacao = buscarPorId(id);
-        repository.delete(classificacao);
+
+        ClassificacaoProcesso classificacao =
+                classificacaoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Classificação não encontrada"));
+
+        classificacaoRepository.delete(classificacao);
     }
 }

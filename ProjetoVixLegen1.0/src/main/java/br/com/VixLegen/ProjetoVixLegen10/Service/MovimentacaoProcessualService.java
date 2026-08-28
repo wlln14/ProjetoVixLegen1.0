@@ -1,8 +1,9 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.MovimentacaoProcessual;
+import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.MovimentacaoProcessualRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,43 +11,77 @@ import java.util.List;
 @Service
 public class MovimentacaoProcessualService {
 
-    @Autowired
-    private MovimentacaoProcessualRepository repository;
+    private final MovimentacaoProcessualRepository movimentacaoRepository;
+    private final ProcessoJuridicoRepository processoRepository;
 
+    public MovimentacaoProcessualService(
+            MovimentacaoProcessualRepository movimentacaoRepository,
+            ProcessoJuridicoRepository processoRepository) {
+
+        this.movimentacaoRepository = movimentacaoRepository;
+        this.processoRepository = processoRepository;
+    }
+
+    // CREATE
     public MovimentacaoProcessual cadastrar(
             MovimentacaoProcessual movimentacao) {
 
-        return repository.save(movimentacao);
+        ProcessoJuridico processo = processoRepository.findById(
+                movimentacao.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
+
+        movimentacao.setProcesso(processo);
+
+        return movimentacaoRepository.save(movimentacao);
     }
 
-    public List<MovimentacaoProcessual> listar() {
-        return repository.findAll();
+    // READ
+    public List<MovimentacaoProcessual> listarTodos() {
+        return movimentacaoRepository.findAll();
     }
 
+    // READ por ID
     public MovimentacaoProcessual buscarPorId(Long id) {
 
-        return repository.findById(id)
+        return movimentacaoRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Movimentação não encontrada"));
+                                "Movimentação processual não encontrada"));
     }
 
+    // UPDATE
     public MovimentacaoProcessual atualizar(
             Long id,
-            MovimentacaoProcessual dados) {
+            MovimentacaoProcessual movimentacao) {
 
-        MovimentacaoProcessual movimentacao = buscarPorId(id);
+        MovimentacaoProcessual existente =
+                movimentacaoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Movimentação processual não encontrada"));
 
-        movimentacao.setData(dados.getData());
-        movimentacao.setDescricao(dados.getDescricao());
+        ProcessoJuridico processo = processoRepository.findById(
+                movimentacao.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
 
-        return repository.save(movimentacao);
+        existente.setData(movimentacao.getData());
+        existente.setDescricao(movimentacao.getDescricao());
+        existente.setProcesso(processo);
+
+        return movimentacaoRepository.save(existente);
     }
 
+    // DELETE
     public void excluir(Long id) {
 
-        MovimentacaoProcessual movimentacao = buscarPorId(id);
+        MovimentacaoProcessual movimentacao =
+                movimentacaoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Movimentação processual não encontrada"));
 
-        repository.delete(movimentacao);
+        movimentacaoRepository.delete(movimentacao);
     }
 }

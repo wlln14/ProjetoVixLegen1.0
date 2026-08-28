@@ -1,7 +1,9 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.IA;
+import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.IARepository;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,55 +12,90 @@ import java.util.List;
 @Service
 public class IAService {
 
-    @Autowired
-    private IARepository repository;
+    private final IARepository analiseRepository;
+    private final ProcessoJuridicoRepository processoRepository;
 
-    public IA cadastrar(
-            IA analise) {
+    public IAService(
+            IARepository analiseRepository,
+            ProcessoJuridicoRepository processoRepository) {
 
-        return repository.save(analise);
+        this.analiseRepository = analiseRepository;
+        this.processoRepository = processoRepository;
     }
 
-    public List<IA> listar() {
-        return repository.findAll();
+    // CREATE
+    public IA cadastrar(IA analise) {
+
+        ProcessoJuridico processo = processoRepository.findById(
+                analise.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
+
+        analise.setProcesso(processo);
+
+        return analiseRepository.save(analise);
     }
 
+    // READ
+    public List<IA> listarTodos() {
+        return analiseRepository.findAll();
+    }
+
+    // READ por ID
     public IA buscarPorId(Long id) {
 
-        return repository.findById(id)
+        return analiseRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Análise de IA não encontrada"));
+                        new RuntimeException("Análise de IA não encontrada"));
     }
 
+    // UPDATE
     public IA atualizar(
             Long id,
-            IA dados) {
+            IA analise) {
 
-        IA analise = buscarPorId(id);
+        IA existente = analiseRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Análise de IA não encontrada"));
 
-        analise.setPrevisaoTempoJulgamento(
-                dados.getPrevisaoTempoJulgamento());
+        ProcessoJuridico processo = processoRepository.findById(
+                analise.getProcesso().getIdProcesso()
+        ).orElseThrow(() ->
+                new RuntimeException("Processo jurídico não encontrado"));
 
-        analise.setProbabilidadeSucesso(
-                dados.getProbabilidadeSucesso());
+        existente.setPrevisaoTempoJulgamento(
+                analise.getPrevisaoTempoJulgamento()
+        );
 
-        analise.setNivelConfianca(
-                dados.getNivelConfianca());
+        existente.setProbabilidadeSucesso(
+                analise.getProbabilidadeSucesso()
+        );
 
-        analise.setSugestoes(
-                dados.getSugestoes());
+        existente.setNivelConfianca(
+                analise.getNivelConfianca()
+        );
 
-        analise.setPadroesEncontrados(
-                dados.getPadroesEncontrados());
+        existente.setSugestoes(
+                analise.getSugestoes()
+        );
 
-        return repository.save(analise);
+        existente.setPadroesEncontrados(
+                analise.getPadroesEncontrados()
+        );
+
+        existente.setProcesso(processo);
+
+        return analiseRepository.save(existente);
     }
 
+    // DELETE
     public void excluir(Long id) {
 
-        IA analise = buscarPorId(id);
+        IA analise = analiseRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Análise de IA não encontrada"));
 
-        repository.delete(analise);
+        analiseRepository.delete(analise);
     }
 }
+

@@ -1,6 +1,8 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +12,26 @@ import java.util.List;
 public class ProcessoJuridicoService {
 
     private final ProcessoJuridicoRepository processoRepository;
+    private final ClienteRepository clienteRepository;
 
-    public ProcessoJuridicoService(ProcessoJuridicoRepository processoRepository) {
+    public ProcessoJuridicoService(
+            ProcessoJuridicoRepository processoRepository,
+            ClienteRepository clienteRepository) {
+
         this.processoRepository = processoRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     // CREATE
     public ProcessoJuridico cadastrar(ProcessoJuridico processo) {
+
+        Cliente cliente = clienteRepository.findById(
+                processo.getCliente().getIdCliente()
+        ).orElseThrow(() ->
+                new RuntimeException("Cliente não encontrado"));
+
+        processo.setCliente(cliente);
+
         return processoRepository.save(processo);
     }
 
@@ -27,6 +42,7 @@ public class ProcessoJuridicoService {
 
     // READ - por ID
     public ProcessoJuridico buscarPorId(Long id) {
+
         return processoRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Processo jurídico não encontrado"));
@@ -41,12 +57,18 @@ public class ProcessoJuridicoService {
                 .orElseThrow(() ->
                         new RuntimeException("Processo jurídico não encontrado"));
 
+        Cliente cliente = clienteRepository.findById(
+                processo.getCliente().getIdCliente()
+        ).orElseThrow(() ->
+                new RuntimeException("Cliente não encontrado"));
+
         processoExistente.setNumeroProcesso(processo.getNumeroProcesso());
         processoExistente.setVara(processo.getVara());
         processoExistente.setComarca(processo.getComarca());
         processoExistente.setTribunal(processo.getTribunal());
         processoExistente.setInstancia(processo.getInstancia());
         processoExistente.setSegredoJustica(processo.isSegredoJustica());
+        processoExistente.setCliente(cliente);
 
         return processoRepository.save(processoExistente);
     }

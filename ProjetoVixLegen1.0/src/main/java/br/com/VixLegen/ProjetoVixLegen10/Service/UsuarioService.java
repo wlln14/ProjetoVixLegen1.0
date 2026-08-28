@@ -1,6 +1,8 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Model.Categoria;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.CategoriaRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
@@ -11,13 +13,33 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final CategoriaRepository categoriaRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            CategoriaRepository categoriaRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.categoriaRepository = categoriaRepository;
     }
 
     public Usuario cadastrar(Usuario usuario) {
-    return usuarioRepository.save(usuario);
+
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new RuntimeException("E-mail já cadastrado");
+        }
+
+        if (usuarioRepository.existsByCpf(usuario.getCpf())) {
+            throw new RuntimeException("CPF já cadastrado");
+        }
+
+        Categoria categoria = categoriaRepository.findById(
+                usuario.getCategoria().getCodigoCategoria()
+        ).orElseThrow(() ->
+                new RuntimeException("Categoria não encontrada"));
+
+        usuario.setCategoria(categoria);
+
+        return usuarioRepository.save(usuario);
     }
 
     public List<Usuario> listarTodos() {
@@ -48,6 +70,13 @@ public class UsuarioService {
         usuarioExistente.setCidade(usuario.getCidade());
         usuarioExistente.setCep(usuario.getCep());
         usuarioExistente.setAtivo(usuario.isAtivo());
+
+        Categoria categoria = categoriaRepository.findById(
+                usuario.getCategoria().getCodigoCategoria()
+        ).orElseThrow(() ->
+                new RuntimeException("Categoria não encontrada"));
+
+        usuarioExistente.setCategoria(categoria);
 
         return usuarioRepository.save(usuarioExistente);
     }

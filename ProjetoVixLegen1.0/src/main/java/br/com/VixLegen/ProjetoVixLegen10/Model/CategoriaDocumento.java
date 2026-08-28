@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "categoriasDocumento")
@@ -16,7 +18,7 @@ public class CategoriaDocumento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long codigo;
+    private Long codigoCategoriaDocumento;
 
     @NotBlank
     private String descricao;
@@ -26,4 +28,7 @@ public class CategoriaDocumento {
 
     @NotNull
     private BigDecimal valorTaxaDiariaMulta;
+
+    @OneToMany(mappedBy = "categoriaDocumento")
+    private List<DocumentoJuridico> documentos = new ArrayList<>();
 }

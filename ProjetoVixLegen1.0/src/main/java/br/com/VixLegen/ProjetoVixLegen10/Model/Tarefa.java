@@ -29,4 +29,12 @@ public class Tarefa {
 
     @NotBlank
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "processo_id", nullable = false)
+    private ProcessoJuridico processo;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuarioResponsavel;
 }

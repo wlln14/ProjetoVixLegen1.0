@@ -9,34 +9,37 @@ import java.util.List;
 @Service
 public class CategoriaDocumentoService {
 
-    private final CategoriaDocumentoRepository repository;
+    private final CategoriaDocumentoRepository categoriaRepository;
 
     public CategoriaDocumentoService(
-            CategoriaDocumentoRepository repository) {
-        this.repository = repository;
+            CategoriaDocumentoRepository categoriaRepository) {
+
+        this.categoriaRepository = categoriaRepository;
     }
 
     public CategoriaDocumento cadastrar(CategoriaDocumento categoria) {
-        return repository.save(categoria);
+        return categoriaRepository.save(categoria);
     }
 
     public List<CategoriaDocumento> listarTodos() {
-        return repository.findAll();
+        return categoriaRepository.findAll();
     }
 
     public CategoriaDocumento buscarPorId(Long id) {
-        return repository.findById(id)
+        return categoriaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Categoria de documento não encontrada"));
+                        new RuntimeException(
+                                "Categoria de documento não encontrada"));
     }
 
     public CategoriaDocumento atualizar(
             Long id,
             CategoriaDocumento categoria) {
 
-        CategoriaDocumento existente = repository.findById(id)
+        CategoriaDocumento existente = categoriaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Categoria de documento não encontrada"));
+                        new RuntimeException(
+                                "Categoria de documento não encontrada"));
 
         existente.setDescricao(categoria.getDescricao());
         existente.setPrazoMaximoUtilizacao(
@@ -44,15 +47,16 @@ public class CategoriaDocumentoService {
         existente.setValorTaxaDiariaMulta(
                 categoria.getValorTaxaDiariaMulta());
 
-        return repository.save(existente);
+        return categoriaRepository.save(existente);
     }
 
     public void excluir(Long id) {
 
-        CategoriaDocumento categoria = repository.findById(id)
+        CategoriaDocumento categoria = categoriaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Categoria de documento não encontrada"));
+                        new RuntimeException(
+                                "Categoria de documento não encontrada"));
 
-        repository.delete(categoria);
+        categoriaRepository.delete(categoria);
     }
 }

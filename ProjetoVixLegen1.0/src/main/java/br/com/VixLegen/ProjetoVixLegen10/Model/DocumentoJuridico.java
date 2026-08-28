@@ -26,4 +26,12 @@ public class DocumentoJuridico {
 
     @NotBlank
     private String arquivo;
+
+    @ManyToOne
+    @JoinColumn(name = "processo_id", nullable = false)
+    private ProcessoJuridico processo;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_documento_id", nullable = false)
+    private CategoriaDocumento categoriaDocumento;
 }
