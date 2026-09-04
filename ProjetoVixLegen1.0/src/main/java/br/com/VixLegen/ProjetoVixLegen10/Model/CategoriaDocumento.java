@@ -3,6 +3,7 @@ package br.com.VixLegen.ProjetoVixLegen10.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,9 +25,11 @@ public class CategoriaDocumento {
     private String descricao;
 
     @NotNull
+    @PositiveOrZero
     private Integer prazoMaximoUtilizacao;
 
     @NotNull
+    @PositiveOrZero
     private BigDecimal valorTaxaDiariaMulta;
 
     @OneToMany(mappedBy = "categoriaDocumento")

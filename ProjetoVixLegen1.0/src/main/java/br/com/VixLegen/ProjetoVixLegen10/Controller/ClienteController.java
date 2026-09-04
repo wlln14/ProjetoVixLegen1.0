@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
+import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Service.ClienteService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +45,19 @@ public class ClienteController {
         );
     }
 
+    @GetMapping("/{id}/processos")
+    public ResponseEntity<List<ProcessoJuridico>> listarProcessos(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                clienteService.listarProcessos(id)
+        );
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Cliente> atualizar(
-            @Valid @PathVariable Long id,
-            @RequestBody Cliente cliente) {
+            @PathVariable Long id,
+            @Valid @RequestBody Cliente cliente) {
 
         return ResponseEntity.ok(
                 clienteService.atualizar(id, cliente)

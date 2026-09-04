@@ -1,10 +1,13 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "processosJuridicos")
@@ -32,6 +35,13 @@ public class ProcessoJuridico {
     private String instancia;
 
     private boolean segredoJustica;
+
+    private LocalDate dataAbertura;
+
+    private LocalDate dataEncerramento;
+
+    @Enumerated(EnumType.STRING)
+    private StatusProcesso status;
 
     @NotNull
     @ManyToOne

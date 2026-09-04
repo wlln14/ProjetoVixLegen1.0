@@ -63,4 +63,13 @@ public class DocumentoJuridicoController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/processo/{idProcesso}")
+    public ResponseEntity<List<DocumentoJuridico>> listarPorProcesso(
+            @PathVariable Long idProcesso) {
+
+        return ResponseEntity.ok(
+                service.listarPorProcesso(idProcesso)
+        );
+    }
 }

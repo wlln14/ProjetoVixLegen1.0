@@ -104,4 +104,13 @@ public class DocumentoJuridicoService {
 
         documentoRepository.delete(documento);
     }
+
+    public List<DocumentoJuridico> listarPorProcesso(Long idProcesso) {
+
+        if (!processoRepository.existsById(idProcesso)) {
+            throw new RuntimeException("Processo jurídico não encontrado");
+        }
+
+        return documentoRepository.findByProcessoIdProcesso(idProcesso);
+    }
 }

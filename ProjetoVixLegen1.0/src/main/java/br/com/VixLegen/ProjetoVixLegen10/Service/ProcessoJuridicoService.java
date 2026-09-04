@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
@@ -57,6 +58,10 @@ public class ProcessoJuridicoService {
                 .orElseThrow(() ->
                         new RuntimeException("Processo jurídico não encontrado"));
 
+        if (processoExistente.getStatus() == StatusProcesso.ENCERRADO) {
+            throw new RuntimeException("Processo encerrado não pode ser alterado");
+        }
+
         Cliente cliente = clienteRepository.findById(
                 processo.getCliente().getIdCliente()
         ).orElseThrow(() ->
@@ -81,5 +86,9 @@ public class ProcessoJuridicoService {
                         new RuntimeException("Processo jurídico não encontrado"));
 
         processoRepository.delete(processo);
+    }
+
+    public List<ProcessoJuridico> listarPorStatus(StatusProcesso status) {
+        return processoRepository.findByStatus(status);
     }
 }

@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Service.ProcessoJuridicoService;
 import jakarta.validation.Valid;
@@ -63,5 +64,14 @@ public class ProcessoJuridicoController {
         processoService.excluir(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<ProcessoJuridico>> listarPorStatus(
+            @PathVariable StatusProcesso status) {
+
+        return ResponseEntity.ok(
+                processoService.listarPorStatus(status)
+        );
     }
 }

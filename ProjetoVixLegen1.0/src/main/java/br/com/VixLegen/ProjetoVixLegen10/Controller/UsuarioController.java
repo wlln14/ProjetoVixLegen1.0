@@ -51,4 +51,30 @@ public class UsuarioController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Usuario> buscarPorEmail(
+            @PathVariable String email) {
+
+        return ResponseEntity.ok(
+                usuarioService.buscarPorEmail(email)
+        );
+    }
+
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<Usuario> buscarPorCpf(
+            @PathVariable String cpf) {
+
+        return ResponseEntity.ok(
+                usuarioService.buscarPorCpf(cpf)
+        );
+    }
+
+    @GetMapping("/ativos")
+    public ResponseEntity<List<Usuario>> listarAtivos() {
+
+        return ResponseEntity.ok(
+                usuarioService.listarAtivos()
+        );
+    }
 }

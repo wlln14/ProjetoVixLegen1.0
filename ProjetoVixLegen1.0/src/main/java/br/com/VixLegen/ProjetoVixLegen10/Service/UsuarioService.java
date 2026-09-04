@@ -53,8 +53,11 @@ public class UsuarioService {
 
     public Usuario atualizar(Long id, Usuario usuario) {
 
-        Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        Usuario usuarioExistente = buscarUsuarioAtivo(id);
+
+        if (!usuarioExistente.isAtivo()) {
+            throw new RuntimeException("Usuário está inativo");
+        }
 
         usuarioExistente.setPrimeiroNome(usuario.getPrimeiroNome());
         usuarioExistente.setUltimoNome(usuario.getUltimoNome());
@@ -87,5 +90,36 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         usuarioRepository.delete(usuario);
+    }
+
+    public Usuario buscarUsuarioAtivo(Long id) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado"));
+
+        if (!usuario.isAtivo()) {
+            throw new RuntimeException("Usuário está inativo");
+        }
+
+        return usuario;
+    }
+
+    public Usuario buscarPorEmail(String email) {
+
+        return usuarioRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado"));
+    }
+
+    public Usuario buscarPorCpf(String cpf) {
+
+        return usuarioRepository.findByCpf(cpf)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado"));
+    }
+
+    public List<Usuario> listarAtivos() {
+        return usuarioRepository.findByAtivoTrue();
     }
 }
