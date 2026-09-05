@@ -91,4 +91,13 @@ public class ProcessoJuridicoService {
     public List<ProcessoJuridico> listarPorStatus(StatusProcesso status) {
         return processoRepository.findByStatus(status);
     }
+
+    public StatusProcesso consultarSituacao(Long id) {
+
+        ProcessoJuridico processo = processoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Processo jurídico não encontrado"));
+
+        return processo.getStatus();
+    }
 }

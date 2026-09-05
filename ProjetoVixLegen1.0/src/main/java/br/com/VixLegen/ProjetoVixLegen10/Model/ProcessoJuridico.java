@@ -19,8 +19,8 @@ public class ProcessoJuridico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProcesso;
 
-    @NotBlank
     @Column(unique = true, nullable = false)
+    @NotBlank
     private String numeroProcesso;
 
     @NotBlank

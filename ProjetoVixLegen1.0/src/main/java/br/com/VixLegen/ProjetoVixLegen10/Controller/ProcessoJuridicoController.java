@@ -74,4 +74,13 @@ public class ProcessoJuridicoController {
                 processoService.listarPorStatus(status)
         );
     }
+
+    @GetMapping("/{id}/situacao")
+    public ResponseEntity<StatusProcesso> consultarSituacao(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                processoService.consultarSituacao(id)
+        );
+    }
 }

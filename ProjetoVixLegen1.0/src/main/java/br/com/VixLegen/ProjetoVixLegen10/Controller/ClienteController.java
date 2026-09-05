@@ -72,4 +72,13 @@ public class ClienteController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/historico")
+    public ResponseEntity<List<ProcessoJuridico>> consultarHistorico(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                clienteService.consultarHistorico(id)
+        );
+    }
 }

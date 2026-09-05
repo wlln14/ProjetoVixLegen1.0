@@ -67,4 +67,13 @@ public class ClienteService {
 
         clienteRepository.delete(cliente);
     }
+
+    public List<ProcessoJuridico> consultarHistorico(Long idCliente) {
+
+        if (!clienteRepository.existsById(idCliente)) {
+            throw new RuntimeException("Cliente não encontrado");
+        }
+
+        return processoRepository.findByClienteIdCliente(idCliente);
+    }
 }

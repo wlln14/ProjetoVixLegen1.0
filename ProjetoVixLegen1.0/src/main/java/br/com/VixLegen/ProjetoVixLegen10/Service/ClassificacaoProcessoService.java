@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ClassificacaoProcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClassificacaoProcessoRepository;
@@ -85,5 +86,20 @@ public class ClassificacaoProcessoService {
                                         "Classificação não encontrada"));
 
         classificacaoRepository.delete(classificacao);
+    }
+
+    public ClassificacaoProcesso alterarStatus(
+            Long id,
+            StatusProcesso novoStatus) {
+
+        ClassificacaoProcesso classificacao =
+                classificacaoRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Classificação não encontrada"));
+
+        classificacao.setStatus(novoStatus);
+
+        return classificacaoRepository.save(classificacao);
     }
 }
