@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,16 @@ public class ParteEnvolvida {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idParte;
 
+    @NotBlank
     private String posicaoCliente;
+
+    @NotBlank
     private String parteContraria;
+
+    @NotBlank
     private String advogadoContrario;
+
+    @NotBlank
     private String juizResponsavel;
 
     @ManyToOne

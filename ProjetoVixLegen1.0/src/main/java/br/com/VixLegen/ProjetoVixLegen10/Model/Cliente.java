@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -19,16 +20,17 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCliente;
 
-    @NotNull
+    @NotBlank
     private String nomeCompleto;
 
-    @NotNull
+    @NotBlank
+    @Email
     private String email;
 
-    @NotNull
+    @NotBlank
     private String telefone;
 
-    @NotNull
+    @NotBlank
     private String cpf;
 
     @OneToMany(mappedBy = "cliente")

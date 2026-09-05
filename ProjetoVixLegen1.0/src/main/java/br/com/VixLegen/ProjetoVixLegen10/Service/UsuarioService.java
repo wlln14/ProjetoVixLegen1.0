@@ -55,10 +55,6 @@ public class UsuarioService {
 
         Usuario usuarioExistente = buscarUsuarioAtivo(id);
 
-        if (!usuarioExistente.isAtivo()) {
-            throw new RuntimeException("Usuário está inativo");
-        }
-
         usuarioExistente.setPrimeiroNome(usuario.getPrimeiroNome());
         usuarioExistente.setUltimoNome(usuario.getUltimoNome());
         usuarioExistente.setEmail(usuario.getEmail());

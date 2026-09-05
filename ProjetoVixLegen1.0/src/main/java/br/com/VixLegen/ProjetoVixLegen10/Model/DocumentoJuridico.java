@@ -29,7 +29,7 @@ public class DocumentoJuridico {
 
     private String tipoArquivo;
 
-    private String tamanhoArquivo;
+    private Long tamanhoArquivo;
 
     @ManyToOne
     @JoinColumn(name = "processo_id", nullable = false)

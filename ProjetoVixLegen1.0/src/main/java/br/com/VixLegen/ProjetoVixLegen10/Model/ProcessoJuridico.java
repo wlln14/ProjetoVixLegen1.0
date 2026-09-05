@@ -20,6 +20,7 @@ public class ProcessoJuridico {
     private Long idProcesso;
 
     @NotBlank
+    @Column(unique = true, nullable = false)
     private String numeroProcesso;
 
     @NotBlank
@@ -36,6 +37,7 @@ public class ProcessoJuridico {
 
     private boolean segredoJustica;
 
+    @NotNull
     private LocalDate dataAbertura;
 
     private LocalDate dataEncerramento;
