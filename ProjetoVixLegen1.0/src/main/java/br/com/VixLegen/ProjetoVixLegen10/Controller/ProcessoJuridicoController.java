@@ -49,8 +49,8 @@ public class ProcessoJuridicoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProcessoJuridico> atualizar(
-            @Valid @PathVariable Long id,
-            @RequestBody ProcessoJuridico processo) {
+            @PathVariable Long id,
+            @Valid @RequestBody ProcessoJuridico processo) {
 
         return ResponseEntity.ok(
                 processoService.atualizar(id, processo)
