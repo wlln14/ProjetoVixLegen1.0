@@ -64,4 +64,14 @@ public class MovimentacaoProcessualController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/processo/{idProcesso}")
+    public ResponseEntity<MovimentacaoProcessual> registrar(
+            @PathVariable Long idProcesso,
+            @Valid @RequestBody MovimentacaoProcessual movimentacao) {
+
+        return ResponseEntity.ok(
+                movimentacaoService.registrar(idProcesso, movimentacao)
+        );
+    }
 }

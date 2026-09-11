@@ -62,4 +62,22 @@ public class NotificacaoController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/enviar")
+    public ResponseEntity<Notificacao> enviar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                notificacaoService.enviar(id)
+        );
+    }
+
+    @PatchMapping("/{id}/cancelar")
+    public ResponseEntity<Notificacao> cancelar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                notificacaoService.cancelar(id)
+        );
+    }
 }

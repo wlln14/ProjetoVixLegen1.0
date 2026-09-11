@@ -114,4 +114,30 @@ public class DocumentoJuridicoService {
 
         return documentoRepository.findByProcessoIdProcesso(idProcesso);
     }
+
+    public DocumentoJuridico anexar(Long id, String arquivo) {
+
+        DocumentoJuridico documento = documentoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Documento não encontrado"));
+
+        if (arquivo == null || arquivo.isBlank()) {
+            throw new RuntimeException("O arquivo é obrigatório");
+        }
+
+        documento.setArquivo(arquivo);
+
+        return documentoRepository.save(documento);
+    }
+
+    public DocumentoJuridico remover(Long id) {
+
+        DocumentoJuridico documento = documentoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Documento não encontrado"));
+
+        documento.setArquivo(null);
+
+        return documentoRepository.save(documento);
+    }
 }
