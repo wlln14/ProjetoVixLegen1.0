@@ -81,4 +81,36 @@ public class NotificacaoService {
 
         notificacaoRepository.delete(notificacao);
     }
+
+        public Notificacao enviar(Long id) {
+
+        Notificacao notificacao = notificacaoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Notificação não encontrada"));
+
+        if (notificacao.getStatus().equals(StatusNotificacao.ENVIADA)) {
+            throw new RuntimeException("A notificação já foi enviada");
+        }
+
+        notificacao.setStatus(StatusNotificacao.ENVIADA);
+        notificacao.setDataEnvio(LocalDateTime.now());
+
+        return notificacaoRepository.save(notificacao);
+    }
+
+    public Notificacao cancelar(Long id) {
+
+        Notificacao notificacao = notificacaoRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Notificação não encontrada"));
+
+        if (notificacao.getStatus().equals(StatusNotificacao.ENVIADA)) {
+            throw new RuntimeException(
+                    "Não é possível cancelar uma notificação já enviada");
+        }
+
+        notificacao.setStatus(StatusNotificacao.CANCELADA);
+
+        return notificacaoRepository.save(notificacao);
+    }
 }
