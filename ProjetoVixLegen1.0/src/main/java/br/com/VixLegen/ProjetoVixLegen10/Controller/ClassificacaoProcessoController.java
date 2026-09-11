@@ -49,7 +49,7 @@ public class ClassificacaoProcessoController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<ClassificacaoProcesso> alterarStatus(
             @PathVariable Long id,
-            @RequestParam StatusProcesso status) {
+            @RequestBody StatusProcesso status) {
 
         return ResponseEntity.ok(
                 service.alterarStatus(id, status)

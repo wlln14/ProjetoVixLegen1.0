@@ -1,11 +1,13 @@
 package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.AtribuirTarefaRequest;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Tarefa;
 import br.com.VixLegen.ProjetoVixLegen10.Service.TarefaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -61,5 +63,38 @@ public class TarefaController {
         tarefaService.excluir(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/concluir")
+    public ResponseEntity<Tarefa> concluir(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                tarefaService.concluir(id)
+        );
+    }
+
+    @PatchMapping("/{id}/atribuir")
+    public ResponseEntity<Tarefa> atribuir(
+            @PathVariable Long id,
+            @Valid @RequestBody AtribuirTarefaRequest request) {
+
+        return ResponseEntity.ok(
+                tarefaService.atribuir(
+                        id,
+                        request.getIdUsuario(),
+                        request.getIdProcesso()
+                )
+        );
+    }
+
+    @PatchMapping("/{id}/prazo")
+    public ResponseEntity<Tarefa> alterarPrazo(
+            @PathVariable Long id,
+            @RequestBody LocalDate prazo) {
+
+        return ResponseEntity.ok(
+                tarefaService.alterarPrazo(id, prazo)
+        );
     }
 }

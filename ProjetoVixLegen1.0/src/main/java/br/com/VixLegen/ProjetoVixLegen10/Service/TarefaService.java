@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusTarefa;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Tarefa;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
@@ -9,6 +10,7 @@ import br.com.VixLegen.ProjetoVixLegen10.Repository.TarefaRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -95,5 +97,62 @@ public class TarefaService {
                         new RecursoNaoEncontradoException("Tarefa não encontrada"));
 
         tarefaRepository.delete(tarefa);
+    }
+
+    public Tarefa concluir(Long id) {
+
+        Tarefa tarefa = tarefaRepository.findById(id)
+                .orElseThrow(() ->
+                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
+
+        tarefa.setStatus(StatusTarefa.CONCLUIDA);
+
+        return tarefaRepository.save(tarefa);
+    }
+
+    public Tarefa atribuir(
+            Long idTarefa,
+            Long idUsuario,
+            Long idProcesso) {
+
+        Tarefa tarefa = tarefaRepository.findById(idTarefa)
+                .orElseThrow(() ->
+                        new RuntimeException("Tarefa não encontrada"));
+
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado"));
+
+        ProcessoJuridico processo = processoRepository.findById(idProcesso)
+                .orElseThrow(() ->
+                        new RuntimeException("Processo jurídico não encontrado"));
+
+        tarefa.setUsuarioResponsavel(usuario);
+        tarefa.setProcesso(processo);
+        tarefa.setStatus(StatusTarefa.PENDENTE);
+
+        return tarefaRepository.save(tarefa);
+    }
+
+    public Tarefa alterarPrazo(Long id, LocalDate novoPrazo) {
+
+        Tarefa tarefa = tarefaRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Tarefa não encontrada"));
+
+        if (tarefa.getStatus() == StatusTarefa.CONCLUIDA) {
+            throw new RuntimeException(
+                    "Não é possível alterar o prazo de uma tarefa concluída");
+        }
+
+        if (novoPrazo.isBefore(tarefa.getDataAtribuicao())) {
+            throw new RuntimeException(
+                    "O prazo não pode ser anterior a data de atribuição"
+            );
+        }
+
+        tarefa.setPrazo(novoPrazo);
+
+        return tarefaRepository.save(tarefa);
     }
 }
