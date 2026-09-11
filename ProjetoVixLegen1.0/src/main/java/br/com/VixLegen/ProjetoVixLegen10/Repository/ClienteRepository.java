@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    List<ProcessoJuridico> findByClienteIdCliente(Long idCliente);
+    List<ProcessoJuridico> findByIdCliente(Long idCliente);
 
     boolean existsByCpf(String cpf);
 

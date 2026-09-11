@@ -21,7 +21,7 @@ public class ParteEnvolvidaController {
 
     @GetMapping
     public List<ParteEnvolvida> listar() {
-        return service.listar();
+        return service.listarTodos();
     }
 
     @GetMapping("/{id}")
