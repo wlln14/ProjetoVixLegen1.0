@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.IA;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.IARepository;
@@ -29,7 +30,7 @@ public class IAService {
         ProcessoJuridico processo = processoRepository.findById(
                 analise.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         analise.setProcesso(processo);
 
@@ -46,7 +47,7 @@ public class IAService {
 
         return analiseRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Análise de IA não encontrada"));
+                        new RecursoNaoEncontradoException("Análise de IA não encontrada"));
     }
 
     // UPDATE
@@ -56,12 +57,12 @@ public class IAService {
 
         IA existente = analiseRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Análise de IA não encontrada"));
+                        new RecursoNaoEncontradoException("Análise de IA não encontrada"));
 
         ProcessoJuridico processo = processoRepository.findById(
                 analise.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         existente.setPrevisaoTempoJulgamento(
                 analise.getPrevisaoTempoJulgamento()
@@ -93,7 +94,7 @@ public class IAService {
 
         IA analise = analiseRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Análise de IA não encontrada"));
+                        new RecursoNaoEncontradoException("Análise de IA não encontrada"));
 
         analiseRepository.delete(analise);
     }

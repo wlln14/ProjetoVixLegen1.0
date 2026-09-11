@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Notificacao;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.NotificacaoRepository;
@@ -28,7 +29,7 @@ public class NotificacaoService {
         Usuario usuario = usuarioRepository.findById(
                 notificacao.getUsuario().getIdUsuario()
         ).orElseThrow(() ->
-                new RuntimeException("Usuário não encontrado"));
+                new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         notificacao.setUsuario(usuario);
 
@@ -45,7 +46,7 @@ public class NotificacaoService {
 
         return notificacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Notificação não encontrada"));
+                        new RecursoNaoEncontradoException("Notificação não encontrada"));
     }
 
     // UPDATE
@@ -55,12 +56,12 @@ public class NotificacaoService {
 
         Notificacao existente = notificacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Notificação não encontrada"));
+                        new RecursoNaoEncontradoException("Notificação não encontrada"));
 
         Usuario usuario = usuarioRepository.findById(
                 notificacao.getUsuario().getIdUsuario()
         ).orElseThrow(() ->
-                new RuntimeException("Usuário não encontrado"));
+                new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         existente.setMensagem(notificacao.getMensagem());
         existente.setDataEnvio(notificacao.getDataEnvio());
@@ -76,7 +77,7 @@ public class NotificacaoService {
 
         Notificacao notificacao = notificacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Notificação não encontrada"));
+                        new RecursoNaoEncontradoException("Notificação não encontrada"));
 
         notificacaoRepository.delete(notificacao);
     }

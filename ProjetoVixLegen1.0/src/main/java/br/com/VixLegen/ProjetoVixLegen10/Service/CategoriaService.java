@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Categoria;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,13 @@ public class CategoriaService {
 
     public Categoria buscarPorId(Long id) {
         return categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));
     }
 
     public Categoria atualizar(Long id, Categoria categoria) {
 
         Categoria categoriaExistente = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));
 
         categoriaExistente.setDescricao(categoria.getDescricao());
         categoriaExistente.setNivelAcesso(categoria.getNivelAcesso());
@@ -54,7 +55,7 @@ public class CategoriaService {
     public void excluir(Long id) {
 
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Categoria não encontrada"));
 
         categoriaRepository.delete(categoria);
     }

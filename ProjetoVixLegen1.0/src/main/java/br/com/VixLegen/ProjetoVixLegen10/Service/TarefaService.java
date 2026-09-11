@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Tarefa;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
@@ -33,12 +34,12 @@ public class TarefaService {
         ProcessoJuridico processo = processoRepository.findById(
                 tarefa.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         Usuario usuario = usuarioRepository.findById(
                 tarefa.getUsuarioResponsavel().getIdUsuario()
         ).orElseThrow(() ->
-                new RuntimeException("Usuário responsável não encontrado"));
+                new RecursoNaoEncontradoException("Usuário responsável não encontrado"));
 
         tarefa.setProcesso(processo);
         tarefa.setUsuarioResponsavel(usuario);
@@ -56,7 +57,7 @@ public class TarefaService {
 
         return tarefaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Tarefa não encontrada"));
+                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
     }
 
     // UPDATE
@@ -64,17 +65,17 @@ public class TarefaService {
 
         Tarefa existente = tarefaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Tarefa não encontrada"));
+                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
 
         ProcessoJuridico processo = processoRepository.findById(
                 tarefa.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         Usuario usuario = usuarioRepository.findById(
                 tarefa.getUsuarioResponsavel().getIdUsuario()
         ).orElseThrow(() ->
-                new RuntimeException("Usuário responsável não encontrado"));
+                new RecursoNaoEncontradoException("Usuário responsável não encontrado"));
 
         existente.setDataAtribuicao(tarefa.getDataAtribuicao());
         existente.setPrazo(tarefa.getPrazo());
@@ -91,7 +92,7 @@ public class TarefaService {
 
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Tarefa não encontrada"));
+                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
 
         tarefaRepository.delete(tarefa);
     }

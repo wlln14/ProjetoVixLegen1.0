@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.CategoriaDocumento;
 import br.com.VixLegen.ProjetoVixLegen10.Model.DocumentoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
@@ -33,13 +34,13 @@ public class DocumentoJuridicoService {
         ProcessoJuridico processo = processoRepository.findById(
                 documento.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         CategoriaDocumento categoria = categoriaRepository.findById(
                 documento.getCategoriaDocumento()
                         .getCodigoCategoriaDocumento()
         ).orElseThrow(() ->
-                new RuntimeException(
+                new RecursoNaoEncontradoException(
                         "Categoria de documento não encontrada"));
 
         documento.setProcesso(processo);
@@ -58,7 +59,7 @@ public class DocumentoJuridicoService {
 
         return documentoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Documento não encontrado"));
+                        new RecursoNaoEncontradoException("Documento não encontrado"));
     }
 
     // UPDATE
@@ -69,19 +70,19 @@ public class DocumentoJuridicoService {
         DocumentoJuridico existente =
                 documentoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Documento não encontrado"));
 
         ProcessoJuridico processo = processoRepository.findById(
                 documento.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         CategoriaDocumento categoria = categoriaRepository.findById(
                 documento.getCategoriaDocumento()
                         .getCodigoCategoriaDocumento()
         ).orElseThrow(() ->
-                new RuntimeException(
+                new RecursoNaoEncontradoException(
                         "Categoria de documento não encontrada"));
 
         existente.setNome(documento.getNome());
@@ -99,7 +100,7 @@ public class DocumentoJuridicoService {
         DocumentoJuridico documento =
                 documentoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Documento não encontrado"));
 
         documentoRepository.delete(documento);
@@ -108,7 +109,7 @@ public class DocumentoJuridicoService {
     public List<DocumentoJuridico> listarPorProcesso(Long idProcesso) {
 
         if (!processoRepository.existsById(idProcesso)) {
-            throw new RuntimeException("Processo jurídico não encontrado");
+            throw new RecursoNaoEncontradoException("Processo jurídico não encontrado");
         }
 
         return documentoRepository.findByProcessoIdProcesso(idProcesso);

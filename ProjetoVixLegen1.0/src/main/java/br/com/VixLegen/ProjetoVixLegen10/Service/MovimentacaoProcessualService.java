@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.MovimentacaoProcessual;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.MovimentacaoProcessualRepository;
@@ -29,7 +30,7 @@ public class MovimentacaoProcessualService {
         ProcessoJuridico processo = processoRepository.findById(
                 movimentacao.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         movimentacao.setProcesso(processo);
 
@@ -46,7 +47,7 @@ public class MovimentacaoProcessualService {
 
         return movimentacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException(
+                        new RecursoNaoEncontradoException(
                                 "Movimentação processual não encontrada"));
     }
 
@@ -58,13 +59,13 @@ public class MovimentacaoProcessualService {
         MovimentacaoProcessual existente =
                 movimentacaoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Movimentação processual não encontrada"));
 
         ProcessoJuridico processo = processoRepository.findById(
                 movimentacao.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         existente.setData(movimentacao.getData());
         existente.setDescricao(movimentacao.getDescricao());
@@ -79,7 +80,7 @@ public class MovimentacaoProcessualService {
         MovimentacaoProcessual movimentacao =
                 movimentacaoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Movimentação processual não encontrada"));
 
         movimentacaoRepository.delete(movimentacao);

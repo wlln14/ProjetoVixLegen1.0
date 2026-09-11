@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ClassificacaoProcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClassificacaoProcessoRepository;
@@ -30,7 +31,7 @@ public class ClassificacaoProcessoService {
         ProcessoJuridico processo = processoRepository.findById(
                 classificacao.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         classificacao.setProcesso(processo);
 
@@ -47,7 +48,7 @@ public class ClassificacaoProcessoService {
 
         return classificacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Classificação não encontrada"));
+                        new RecursoNaoEncontradoException("Classificação não encontrada"));
     }
 
     // UPDATE
@@ -58,13 +59,13 @@ public class ClassificacaoProcessoService {
         ClassificacaoProcesso existente =
                 classificacaoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Classificação não encontrada"));
 
         ProcessoJuridico processo = processoRepository.findById(
                 classificacao.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         existente.setStatus(classificacao.getStatus());
         existente.setAreaDireito(classificacao.getAreaDireito());
@@ -82,7 +83,7 @@ public class ClassificacaoProcessoService {
         ClassificacaoProcesso classificacao =
                 classificacaoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Classificação não encontrada"));
 
         classificacaoRepository.delete(classificacao);
@@ -95,7 +96,7 @@ public class ClassificacaoProcessoService {
         ClassificacaoProcesso classificacao =
                 classificacaoRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Classificação não encontrada"));
 
         classificacao.setStatus(novoStatus);
