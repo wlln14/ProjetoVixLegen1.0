@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
@@ -33,13 +34,13 @@ public class ClienteService {
     public Cliente buscarPorId(Long id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Cliente não encontrado"));
+                        new RecursoNaoEncontradoException("Cliente não encontrado"));
     }
 
     public List<ProcessoJuridico> listarProcessos(Long idCliente) {
 
         if (!clienteRepository.existsById(idCliente)) {
-            throw new RuntimeException("Cliente não encontrado");
+            throw new RecursoNaoEncontradoException("Cliente não encontrado");
         }
 
         return processoRepository.findByClienteIdCliente(idCliente);
@@ -49,7 +50,7 @@ public class ClienteService {
 
         Cliente clienteExistente = clienteRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Cliente não encontrado"));
+                        new RecursoNaoEncontradoException("Cliente não encontrado"));
 
         clienteExistente.setNomeCompleto(cliente.getNomeCompleto());
         clienteExistente.setEmail(cliente.getEmail());
@@ -63,7 +64,7 @@ public class ClienteService {
 
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Cliente não encontrado"));
+                        new RecursoNaoEncontradoException("Cliente não encontrado"));
 
         clienteRepository.delete(cliente);
     }
@@ -71,7 +72,7 @@ public class ClienteService {
     public List<ProcessoJuridico> consultarHistorico(Long idCliente) {
 
         if (!clienteRepository.existsById(idCliente)) {
-            throw new RuntimeException("Cliente não encontrado");
+            throw new RecursoNaoEncontradoException("Cliente não encontrado");
         }
 
         return processoRepository.findByClienteIdCliente(idCliente);

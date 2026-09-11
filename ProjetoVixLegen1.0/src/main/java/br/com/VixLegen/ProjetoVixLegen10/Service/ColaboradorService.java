@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Colaborador;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ColaboradorRepository;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,14 @@ public class ColaboradorService {
     public Colaborador buscarPorId(Long id) {
         return colaboradorRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Colaborador não encontrado"));
+                        new RecursoNaoEncontradoException("Colaborador não encontrado"));
     }
 
     public Colaborador atualizar(Long id, Colaborador colaborador) {
 
         Colaborador existente = colaboradorRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Colaborador não encontrado"));
+                        new RecursoNaoEncontradoException("Colaborador não encontrado"));
 
         existente.setNomeCompleto(colaborador.getNomeCompleto());
         existente.setEndereco(colaborador.getEndereco());
@@ -49,7 +50,7 @@ public class ColaboradorService {
 
         Colaborador colaborador = colaboradorRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Colaborador não encontrado"));
+                        new RecursoNaoEncontradoException("Colaborador não encontrado"));
 
         colaboradorRepository.delete(colaborador);
     }

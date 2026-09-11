@@ -1,5 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Categoria;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.CategoriaRepository;
@@ -25,17 +27,17 @@ public class UsuarioService {
     public Usuario cadastrar(Usuario usuario) {
 
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new RuntimeException("E-mail já cadastrado");
+            throw new RegraNegocioException("E-mail já cadastrado");
         }
 
         if (usuarioRepository.existsByCpf(usuario.getCpf())) {
-            throw new RuntimeException("CPF já cadastrado");
+            throw new RegraNegocioException("CPF já cadastrado");
         }
 
         Categoria categoria = categoriaRepository.findById(
                 usuario.getCategoria().getCodigoCategoria()
         ).orElseThrow(() ->
-                new RuntimeException("Categoria não encontrada"));
+                new RecursoNaoEncontradoException("Categoria não encontrada"));
 
         usuario.setCategoria(categoria);
 
@@ -48,7 +50,7 @@ public class UsuarioService {
 
     public Usuario buscarPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
     }
 
     public Usuario atualizar(Long id, Usuario usuario) {
@@ -73,7 +75,7 @@ public class UsuarioService {
         Categoria categoria = categoriaRepository.findById(
                 usuario.getCategoria().getCodigoCategoria()
         ).orElseThrow(() ->
-                new RuntimeException("Categoria não encontrada"));
+                new RecursoNaoEncontradoException("Categoria não encontrada"));
 
         usuarioExistente.setCategoria(categoria);
 
@@ -83,7 +85,7 @@ public class UsuarioService {
     public void excluir(Long id) {
 
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         usuarioRepository.delete(usuario);
     }
@@ -92,10 +94,10 @@ public class UsuarioService {
 
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
+                        new RecursoNaoEncontradoException("Usuário não encontrado"));
 
         if (!usuario.isAtivo()) {
-            throw new RuntimeException("Usuário está inativo");
+            throw new RecursoNaoEncontradoException("Usuário está inativo");
         }
 
         return usuario;
@@ -105,14 +107,14 @@ public class UsuarioService {
 
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
+                        new RecursoNaoEncontradoException("Usuário não encontrado"));
     }
 
     public Usuario buscarPorCpf(String cpf) {
 
         return usuarioRepository.findByCpf(cpf)
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
+                        new RecursoNaoEncontradoException("Usuário não encontrado"));
     }
 
     public List<Usuario> listarAtivos() {

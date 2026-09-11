@@ -1,6 +1,8 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
@@ -29,7 +31,7 @@ public class ProcessoJuridicoService {
         Cliente cliente = clienteRepository.findById(
                 processo.getCliente().getIdCliente()
         ).orElseThrow(() ->
-                new RuntimeException("Cliente não encontrado"));
+                new RecursoNaoEncontradoException("Cliente não encontrado"));
 
         processo.setCliente(cliente);
 
@@ -46,7 +48,7 @@ public class ProcessoJuridicoService {
 
         return processoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Processo jurídico não encontrado"));
+                        new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
     }
 
     // UPDATE
@@ -56,16 +58,16 @@ public class ProcessoJuridicoService {
 
         ProcessoJuridico processoExistente = processoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Processo jurídico não encontrado"));
+                        new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         if (processoExistente.getStatus() == StatusProcesso.ENCERRADO) {
-            throw new RuntimeException("Processo encerrado não pode ser alterado");
+            throw new RegraNegocioException("Processo encerrado não pode ser alterado");
         }
 
         Cliente cliente = clienteRepository.findById(
                 processo.getCliente().getIdCliente()
         ).orElseThrow(() ->
-                new RuntimeException("Cliente não encontrado"));
+                new RecursoNaoEncontradoException("Cliente não encontrado"));
 
         processoExistente.setNumeroProcesso(processo.getNumeroProcesso());
         processoExistente.setVara(processo.getVara());
@@ -83,7 +85,7 @@ public class ProcessoJuridicoService {
 
         ProcessoJuridico processo = processoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Processo jurídico não encontrado"));
+                        new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         processoRepository.delete(processo);
     }
@@ -96,7 +98,7 @@ public class ProcessoJuridicoService {
 
         ProcessoJuridico processo = processoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Processo jurídico não encontrado"));
+                        new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         return processo.getStatus();
     }

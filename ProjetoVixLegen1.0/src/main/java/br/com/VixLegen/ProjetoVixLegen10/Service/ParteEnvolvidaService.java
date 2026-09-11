@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ParteEnvolvida;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ParteEnvolvidaRepository;
@@ -28,7 +29,7 @@ public class ParteEnvolvidaService {
         ProcessoJuridico processo = processoRepository.findById(
                 parte.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         parte.setProcesso(processo);
 
@@ -45,7 +46,7 @@ public class ParteEnvolvidaService {
 
         return parteRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Parte envolvida não encontrada"));
+                        new RecursoNaoEncontradoException("Parte envolvida não encontrada"));
     }
 
     // UPDATE
@@ -56,13 +57,13 @@ public class ParteEnvolvidaService {
         ParteEnvolvida existente =
                 parteRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Parte envolvida não encontrada"));
 
         ProcessoJuridico processo = processoRepository.findById(
                 parte.getProcesso().getIdProcesso()
         ).orElseThrow(() ->
-                new RuntimeException("Processo jurídico não encontrado"));
+                new RecursoNaoEncontradoException("Processo jurídico não encontrado"));
 
         existente.setPosicaoCliente(parte.getPosicaoCliente());
         existente.setParteContraria(parte.getParteContraria());
@@ -79,7 +80,7 @@ public class ParteEnvolvidaService {
         ParteEnvolvida parte =
                 parteRepository.findById(id)
                         .orElseThrow(() ->
-                                new RuntimeException(
+                                new RecursoNaoEncontradoException(
                                         "Parte envolvida não encontrada"));
 
         parteRepository.delete(parte);
