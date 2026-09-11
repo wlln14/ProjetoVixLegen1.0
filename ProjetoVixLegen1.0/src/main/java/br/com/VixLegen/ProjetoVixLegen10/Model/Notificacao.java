@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusNotificacao;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,8 +32,9 @@ public class Notificacao {
     @NotBlank
     private String canal;
 
-    @NotBlank
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private StatusNotificacao status;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)

@@ -72,4 +72,23 @@ public class DocumentoJuridicoController {
                 service.listarPorProcesso(idProcesso)
         );
     }
+
+    @PatchMapping("/{id}/anexar")
+    public ResponseEntity<DocumentoJuridico> anexar(
+            @PathVariable Long id,
+            @RequestBody String arquivo) {
+
+        return ResponseEntity.ok(
+                service.anexar(id, arquivo)
+        );
+    }
+
+    @PatchMapping("/{id}/remover")
+    public ResponseEntity<DocumentoJuridico> remover(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                service.remover(id)
+        );
+    }
 }

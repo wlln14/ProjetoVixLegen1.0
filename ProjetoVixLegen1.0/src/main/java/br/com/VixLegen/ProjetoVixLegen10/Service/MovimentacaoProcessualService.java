@@ -84,4 +84,17 @@ public class MovimentacaoProcessualService {
 
         movimentacaoRepository.delete(movimentacao);
     }
+
+    public MovimentacaoProcessual registrar(
+            Long idProcesso,
+            MovimentacaoProcessual movimentacao) {
+
+        ProcessoJuridico processo = processoRepository.findById(idProcesso)
+                .orElseThrow(() ->
+                        new RuntimeException("Processo jurídico não encontrado"));
+
+        movimentacao.setProcesso(processo);
+
+        return movimentacaoRepository.save(movimentacao);
+    }
 }
