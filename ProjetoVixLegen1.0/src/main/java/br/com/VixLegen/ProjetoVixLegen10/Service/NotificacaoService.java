@@ -1,12 +1,15 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
+import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusNotificacao;
 import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Notificacao;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.NotificacaoRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -82,14 +85,21 @@ public class NotificacaoService {
         notificacaoRepository.delete(notificacao);
     }
 
-        public Notificacao enviar(Long id) {
+    public Notificacao enviar(Long id) {
 
         Notificacao notificacao = notificacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Notificação não encontrada"));
+                        new RecursoNaoEncontradoException(
+                                "Notificação não encontrada"));
 
-        if (notificacao.getStatus().equals(StatusNotificacao.ENVIADA)) {
-            throw new RuntimeException("A notificação já foi enviada");
+        if (notificacao.getStatus() == StatusNotificacao.ENVIADA) {
+            throw new RegraNegocioException(
+                    "A notificação já foi enviada");
+        }
+
+        if (notificacao.getStatus() == StatusNotificacao.CANCELADA) {
+            throw new RegraNegocioException(
+                    "Não é possível enviar uma notificação cancelada");
         }
 
         notificacao.setStatus(StatusNotificacao.ENVIADA);
@@ -98,15 +108,22 @@ public class NotificacaoService {
         return notificacaoRepository.save(notificacao);
     }
 
+
     public Notificacao cancelar(Long id) {
 
         Notificacao notificacao = notificacaoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Notificação não encontrada"));
+                        new RecursoNaoEncontradoException(
+                                "Notificação não encontrada"));
 
-        if (notificacao.getStatus().equals(StatusNotificacao.ENVIADA)) {
-            throw new RuntimeException(
+        if (notificacao.getStatus() == StatusNotificacao.ENVIADA) {
+            throw new RegraNegocioException(
                     "Não é possível cancelar uma notificação já enviada");
+        }
+
+        if (notificacao.getStatus() == StatusNotificacao.CANCELADA) {
+            throw new RegraNegocioException(
+                    "A notificação já está cancelada");
         }
 
         notificacao.setStatus(StatusNotificacao.CANCELADA);

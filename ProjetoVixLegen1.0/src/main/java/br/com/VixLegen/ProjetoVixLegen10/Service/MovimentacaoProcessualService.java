@@ -92,7 +92,8 @@ public class MovimentacaoProcessualService {
 
         ProcessoJuridico processo = processoRepository.findById(idProcesso)
                 .orElseThrow(() ->
-                        new RuntimeException("Processo jurídico não encontrado"));
+                        new RecursoNaoEncontradoException(
+                                "Processo jurídico não encontrado"));
 
         movimentacao.setProcesso(processo);
 

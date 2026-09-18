@@ -24,7 +24,6 @@ public class DocumentoJuridico {
     @NotNull
     private LocalDate dataCadastro;
 
-    @NotBlank
     private String arquivo;
 
     private String tipoArquivo;

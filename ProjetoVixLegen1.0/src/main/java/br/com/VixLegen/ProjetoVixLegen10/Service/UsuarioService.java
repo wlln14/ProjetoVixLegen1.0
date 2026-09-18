@@ -8,6 +8,8 @@ import br.com.VixLegen.ProjetoVixLegen10.Repository.CategoriaRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.UsuarioRequest;
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Response.UsuarioResponse;
 
 import java.util.List;
 
@@ -24,24 +26,21 @@ public class UsuarioService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public Usuario cadastrar(Usuario usuario) {
+    public UsuarioResponse cadastrar(UsuarioRequest request) {
 
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+        if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new RegraNegocioException("E-mail já cadastrado");
         }
 
-        if (usuarioRepository.existsByCpf(usuario.getCpf())) {
+        if (usuarioRepository.existsByCpf(request.getCpf())) {
             throw new RegraNegocioException("CPF já cadastrado");
         }
 
-        Categoria categoria = categoriaRepository.findById(
-                usuario.getCategoria().getCodigoCategoria()
-        ).orElseThrow(() ->
-                new RecursoNaoEncontradoException("Categoria não encontrada"));
+        Usuario usuario = converterParaEntidade(request);
 
-        usuario.setCategoria(categoria);
+        Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
-        return usuarioRepository.save(usuario);
+        return converterParaResponse(usuarioSalvo);
     }
 
     public List<Usuario> listarTodos() {
@@ -120,4 +119,63 @@ public class UsuarioService {
     public List<Usuario> listarAtivos() {
         return usuarioRepository.findByAtivoTrue();
     }
+
+
+    private Usuario converterParaEntidade(UsuarioRequest request) {
+
+        Usuario usuario = new Usuario();
+
+        usuario.setPrimeiroNome(request.getPrimeiroNome());
+        usuario.setUltimoNome(request.getUltimoNome());
+        usuario.setEmail(request.getEmail());
+        usuario.setSenhaHash(request.getSenhaHash());
+        usuario.setTelefone(request.getTelefone());
+        usuario.setCpf(request.getCpf());
+        usuario.setRg(request.getRg());
+        usuario.setEmpresa(request.getEmpresa());
+        usuario.setNumeroOAB(request.getNumeroOAB());
+        usuario.setDataNascimento(request.getDataNascimento());
+        usuario.setEstado(request.getEstado());
+        usuario.setCidade(request.getCidade());
+        usuario.setCep(request.getCep());
+
+        Categoria categoria = categoriaRepository.findById(
+                request.getCodigoCategoria()
+        ).orElseThrow(() ->
+                new RecursoNaoEncontradoException(
+                        "Categoria não encontrada"));
+
+        usuario.setCategoria(categoria);
+
+        return usuario;
+    }
+
+    private UsuarioResponse converterParaResponse(Usuario usuario) {
+
+        UsuarioResponse response = new UsuarioResponse();
+
+        response.setIdUsuario(usuario.getIdUsuario());
+        response.setPrimeiroNome(usuario.getPrimeiroNome());
+        response.setUltimoNome(usuario.getUltimoNome());
+        response.setEmail(usuario.getEmail());
+        response.setTelefone(usuario.getTelefone());
+        response.setCpf(usuario.getCpf());
+        response.setRg(usuario.getRg());
+        response.setEmpresa(usuario.getEmpresa());
+        response.setNumeroOAB(usuario.getNumeroOAB());
+        response.setDataNascimento(usuario.getDataNascimento());
+        response.setEstado(usuario.getEstado());
+        response.setCidade(usuario.getCidade());
+        response.setCep(usuario.getCep());
+        response.setAtivo(usuario.isAtivo());
+
+        if (usuario.getCategoria() != null) {
+            response.setCodigoCategoria(
+                    usuario.getCategoria().getCodigoCategoria()
+            );
+        }
+
+        return response;
+    }
+
 }

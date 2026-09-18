@@ -4,13 +4,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
-public class AtribuirTarefaRequest {
+public class AlterarPrazoRequest {
 
     @NotNull
-    private Long idUsuario;
+    private LocalDate prazo;
 
-    @NotNull
-    private Long idProcesso;
 }

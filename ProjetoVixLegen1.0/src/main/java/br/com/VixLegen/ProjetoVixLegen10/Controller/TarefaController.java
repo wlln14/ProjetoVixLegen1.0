@@ -6,6 +6,7 @@ import br.com.VixLegen.ProjetoVixLegen10.Service.TarefaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.AlterarPrazoRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -91,10 +92,13 @@ public class TarefaController {
     @PatchMapping("/{id}/prazo")
     public ResponseEntity<Tarefa> alterarPrazo(
             @PathVariable Long id,
-            @RequestBody LocalDate prazo) {
+            @Valid @RequestBody AlterarPrazoRequest request) {
 
         return ResponseEntity.ok(
-                tarefaService.alterarPrazo(id, prazo)
+                tarefaService.alterarPrazo(
+                        id,
+                        request.getPrazo()
+                )
         );
     }
 }

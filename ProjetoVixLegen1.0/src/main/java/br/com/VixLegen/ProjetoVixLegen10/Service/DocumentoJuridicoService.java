@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.CategoriaDocumento;
 import br.com.VixLegen.ProjetoVixLegen10.Model.DocumentoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
@@ -119,22 +120,24 @@ public class DocumentoJuridicoService {
 
         DocumentoJuridico documento = documentoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Documento não encontrado"));
+                        new RecursoNaoEncontradoException(
+                                "Documento não encontrado"));
 
         if (arquivo == null || arquivo.isBlank()) {
-            throw new RuntimeException("O arquivo é obrigatório");
+            throw new RegraNegocioException(
+                    "O arquivo é obrigatório");
         }
 
         documento.setArquivo(arquivo);
 
         return documentoRepository.save(documento);
     }
-
     public DocumentoJuridico remover(Long id) {
 
         DocumentoJuridico documento = documentoRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Documento não encontrado"));
+                        new RecursoNaoEncontradoException(
+                                "Documento não encontrado"));
 
         documento.setArquivo(null);
 

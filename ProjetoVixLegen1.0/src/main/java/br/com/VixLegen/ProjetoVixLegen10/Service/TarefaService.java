@@ -2,6 +2,7 @@ package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
 import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusTarefa;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Tarefa;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
@@ -117,15 +118,18 @@ public class TarefaService {
 
         Tarefa tarefa = tarefaRepository.findById(idTarefa)
                 .orElseThrow(() ->
-                        new RuntimeException("Tarefa não encontrada"));
+                        new RecursoNaoEncontradoException(
+                                "Tarefa não encontrada"));
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado"));
+                        new RecursoNaoEncontradoException(
+                                "Usuário não encontrado"));
 
         ProcessoJuridico processo = processoRepository.findById(idProcesso)
                 .orElseThrow(() ->
-                        new RuntimeException("Processo jurídico não encontrado"));
+                        new RecursoNaoEncontradoException(
+                                "Processo jurídico não encontrado"));
 
         tarefa.setUsuarioResponsavel(usuario);
         tarefa.setProcesso(processo);
@@ -138,17 +142,17 @@ public class TarefaService {
 
         Tarefa tarefa = tarefaRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Tarefa não encontrada"));
+                        new RecursoNaoEncontradoException(
+                                "Tarefa não encontrada"));
 
         if (tarefa.getStatus() == StatusTarefa.CONCLUIDA) {
-            throw new RuntimeException(
+            throw new RegraNegocioException(
                     "Não é possível alterar o prazo de uma tarefa concluída");
         }
 
         if (novoPrazo.isBefore(tarefa.getDataAtribuicao())) {
-            throw new RuntimeException(
-                    "O prazo não pode ser anterior a data de atribuição"
-            );
+            throw new RegraNegocioException(
+                    "O prazo não pode ser anterior à data de atribuição");
         }
 
         tarefa.setPrazo(novoPrazo);
