@@ -4,13 +4,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class AlterarPrazoRequest {
 
     @NotNull
-    private LocalDate prazo;
-
+    private LocalDateTime prazo;
 }
