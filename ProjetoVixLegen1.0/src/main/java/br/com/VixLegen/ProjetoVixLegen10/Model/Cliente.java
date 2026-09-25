@@ -1,9 +1,10 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,9 +31,22 @@ public class Cliente {
     @NotBlank
     private String telefone;
 
-    @NotBlank
+    @Column(unique = true)
     private String cpf;
 
+    @Column(unique = true)
+    private String cnpj;
+
     @OneToMany(mappedBy = "cliente")
+    @JsonIgnore
     private List<ProcessoJuridico> processos = new ArrayList<>();
+
+    @AssertTrue(message = "Informe CPF ou CNPJ, mas não os dois")
+    @JsonIgnore
+    public boolean isDocumentoValido() {
+        boolean possuiCpf = cpf != null && !cpf.isBlank();
+        boolean possuiCnpj = cnpj != null && !cnpj.isBlank();
+
+        return possuiCpf ^ possuiCnpj;
+    }
 }
