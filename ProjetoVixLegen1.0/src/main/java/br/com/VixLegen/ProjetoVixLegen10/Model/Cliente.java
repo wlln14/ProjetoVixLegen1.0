@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +37,11 @@ public class Cliente {
 
     @Column(unique = true)
     private String cnpj;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "usuario_responsavel_id", nullable = false)
+    private Usuario usuarioResponsavel;
 
     @OneToMany(mappedBy = "cliente")
     @JsonIgnore
