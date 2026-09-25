@@ -6,6 +6,7 @@ import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ClassificacaoProcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
+import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClassificacaoProcessoRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
@@ -36,6 +37,8 @@ public class ProcessoJuridicoService {
                 processo.getCliente().getIdCliente()
         ).orElseThrow(() ->
                 new RecursoNaoEncontradoException("Cliente não encontrado"));
+
+        validarLimiteProcessos(cliente);
 
         processo.setCliente(cliente);
 
@@ -70,6 +73,11 @@ public class ProcessoJuridicoService {
                 processo.getCliente().getIdCliente()
         ).orElseThrow(() ->
                 new RecursoNaoEncontradoException("Cliente não encontrado"));
+
+        if (!processoExistente.getCliente().getIdCliente()
+                .equals(cliente.getIdCliente())) {
+            validarLimiteProcessos(cliente);
+        }
 
         processoExistente.setNumeroProcesso(processo.getNumeroProcesso());
         processoExistente.setVara(processo.getVara());
@@ -107,5 +115,31 @@ public class ProcessoJuridicoService {
                 .orElseThrow(() ->
                         new RecursoNaoEncontradoException(
                                 "Classificação do processo não encontrada"));
+    }
+
+    private void validarLimiteProcessos(Cliente cliente) {
+
+        Usuario responsavel = cliente.getUsuarioResponsavel();
+
+        if (responsavel == null || responsavel.getCategoria() == null) {
+            throw new RegraNegocioException(
+                    "Cliente sem usuário responsável ou categoria definida");
+        }
+
+        Integer limite = responsavel.getCategoria()
+                .getLimiteProcessosSimultaneos();
+
+        if (limite == null || limite <= 0) {
+            return;
+        }
+
+        long quantidadeAtual =
+                processoRepository.countByClienteUsuarioResponsavelIdUsuario(
+                        responsavel.getIdUsuario());
+
+        if (quantidadeAtual >= limite) {
+            throw new RegraNegocioException(
+                    "O usuário responsável atingiu o limite de processos simultâneos");
+        }
     }
 }
