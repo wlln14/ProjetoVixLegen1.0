@@ -8,4 +8,6 @@ import java.util.List;
 public interface ProcessoJuridicoRepository extends JpaRepository<ProcessoJuridico, Long> {
 
     List<ProcessoJuridico> findByClienteIdCliente(Long idCliente);
+
+    long countByClienteUsuarioResponsavelIdUsuario(Long idUsuario);
 }
