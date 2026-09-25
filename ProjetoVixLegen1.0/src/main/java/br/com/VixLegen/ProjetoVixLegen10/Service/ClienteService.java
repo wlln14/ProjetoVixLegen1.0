@@ -4,8 +4,10 @@ import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException
 import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
+import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ProcessoJuridicoRepository;
+import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,17 +17,23 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final ProcessoJuridicoRepository processoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public ClienteService(
             ClienteRepository clienteRepository,
-            ProcessoJuridicoRepository processoRepository) {
+            ProcessoJuridicoRepository processoRepository,
+            UsuarioRepository usuarioRepository) {
 
         this.clienteRepository = clienteRepository;
         this.processoRepository = processoRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Cliente cadastrar(Cliente cliente) {
         validarDocumentoDuplicado(cliente, null);
+        cliente.setUsuarioResponsavel(
+                buscarUsuarioResponsavel(cliente)
+        );
         return clienteRepository.save(cliente);
     }
 
@@ -54,6 +62,9 @@ public class ClienteService {
         clienteExistente.setTelefone(cliente.getTelefone());
         clienteExistente.setCpf(cliente.getCpf());
         clienteExistente.setCnpj(cliente.getCnpj());
+        clienteExistente.setUsuarioResponsavel(
+                buscarUsuarioResponsavel(cliente)
+        );
 
         return clienteRepository.save(clienteExistente);
     }
@@ -73,6 +84,21 @@ public class ClienteService {
     public List<ProcessoJuridico> consultarHistorico(Long idCliente) {
         buscarPorId(idCliente);
         return processoRepository.findByClienteIdCliente(idCliente);
+    }
+
+    private Usuario buscarUsuarioResponsavel(Cliente cliente) {
+
+        if (cliente.getUsuarioResponsavel() == null
+                || cliente.getUsuarioResponsavel().getIdUsuario() == null) {
+            throw new RegraNegocioException(
+                    "O usuário responsável pelo cliente é obrigatório");
+        }
+
+        return usuarioRepository.findById(
+                cliente.getUsuarioResponsavel().getIdUsuario()
+        ).orElseThrow(() ->
+                new RecursoNaoEncontradoException(
+                        "Usuário responsável não encontrado"));
     }
 
     private void validarDocumentoDuplicado(Cliente cliente, Long idClienteAtual) {
