@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -39,5 +40,6 @@ public class Categoria {
     private boolean permissaoExcluir;
 
     @OneToMany(mappedBy = "categoria")
+    @JsonIgnore
     private List<Usuario> usuarios = new ArrayList<>();
 }

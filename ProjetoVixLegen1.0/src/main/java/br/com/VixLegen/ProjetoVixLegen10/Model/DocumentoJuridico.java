@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "documentosJuridicos")
@@ -22,7 +22,7 @@ public class DocumentoJuridico {
     private String nome;
 
     @NotNull
-    private LocalDate dataCadastro;
+    private LocalDateTime dataCadastro;
 
     private String arquivo;
 

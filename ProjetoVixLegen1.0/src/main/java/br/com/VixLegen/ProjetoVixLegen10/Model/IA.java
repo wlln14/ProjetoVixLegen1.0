@@ -21,7 +21,7 @@ public class IA {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idAnalise;
 
-    private BigDecimal previsaoTempoJulgamento;
+    private String previsaoTempoJulgamento;
 
     private BigDecimal probabilidadeSucesso;
 

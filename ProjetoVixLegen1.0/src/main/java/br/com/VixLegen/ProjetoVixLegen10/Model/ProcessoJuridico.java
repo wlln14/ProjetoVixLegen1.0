@@ -1,6 +1,5 @@
 package br.com.VixLegen.ProjetoVixLegen10.Model;
 
-import br.com.VixLegen.ProjetoVixLegen10.Enums.StatusProcesso;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,9 +40,6 @@ public class ProcessoJuridico {
     private LocalDate dataAbertura;
 
     private LocalDate dataEncerramento;
-
-    @Enumerated(EnumType.STRING)
-    private StatusProcesso status;
 
     @NotNull
     @ManyToOne

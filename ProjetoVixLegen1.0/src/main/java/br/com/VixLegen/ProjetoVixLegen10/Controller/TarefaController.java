@@ -1,14 +1,13 @@
 package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.AlterarPrazoRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.AtribuirTarefaRequest;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Tarefa;
 import br.com.VixLegen.ProjetoVixLegen10.Service.TarefaService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.AlterarPrazoRequest;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -32,19 +31,14 @@ public class TarefaController {
 
     @GetMapping
     public ResponseEntity<List<Tarefa>> listarTodos() {
-
-        return ResponseEntity.ok(
-                tarefaService.listarTodos()
-        );
+        return ResponseEntity.ok(tarefaService.listarTodos());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Tarefa> buscarPorId(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                tarefaService.buscarPorId(id)
-        );
+        return ResponseEntity.ok(tarefaService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
@@ -62,7 +56,6 @@ public class TarefaController {
             @PathVariable Long id) {
 
         tarefaService.excluir(id);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -70,9 +63,7 @@ public class TarefaController {
     public ResponseEntity<Tarefa> concluir(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                tarefaService.concluir(id)
-        );
+        return ResponseEntity.ok(tarefaService.concluir(id));
     }
 
     @PatchMapping("/{id}/atribuir")
