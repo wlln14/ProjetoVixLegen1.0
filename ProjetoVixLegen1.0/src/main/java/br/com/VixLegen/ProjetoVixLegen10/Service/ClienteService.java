@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.Exception.RecursoNaoEncontradoException;
+import br.com.VixLegen.ProjetoVixLegen10.Exception.RegraNegocioException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Cliente;
 import br.com.VixLegen.ProjetoVixLegen10.Model.ProcessoJuridico;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.ClienteRepository;
@@ -24,6 +25,7 @@ public class ClienteService {
     }
 
     public Cliente cadastrar(Cliente cliente) {
+        validarDocumentoDuplicado(cliente, null);
         return clienteRepository.save(cliente);
     }
 
@@ -38,43 +40,63 @@ public class ClienteService {
     }
 
     public List<ProcessoJuridico> listarProcessos(Long idCliente) {
-
-        if (!clienteRepository.existsById(idCliente)) {
-            throw new RecursoNaoEncontradoException("Cliente não encontrado");
-        }
-
+        buscarPorId(idCliente);
         return processoRepository.findByClienteIdCliente(idCliente);
     }
 
     public Cliente atualizar(Long id, Cliente cliente) {
 
-        Cliente clienteExistente = clienteRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Cliente não encontrado"));
+        Cliente clienteExistente = buscarPorId(id);
+        validarDocumentoDuplicado(cliente, id);
 
         clienteExistente.setNomeCompleto(cliente.getNomeCompleto());
         clienteExistente.setEmail(cliente.getEmail());
         clienteExistente.setTelefone(cliente.getTelefone());
         clienteExistente.setCpf(cliente.getCpf());
+        clienteExistente.setCnpj(cliente.getCnpj());
 
         return clienteRepository.save(clienteExistente);
     }
 
     public void excluir(Long id) {
 
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Cliente não encontrado"));
+        Cliente cliente = buscarPorId(id);
+
+        if (!processoRepository.findByClienteIdCliente(id).isEmpty()) {
+            throw new RegraNegocioException(
+                    "Não é possível excluir um cliente com processos vinculados");
+        }
 
         clienteRepository.delete(cliente);
     }
 
     public List<ProcessoJuridico> consultarHistorico(Long idCliente) {
+        buscarPorId(idCliente);
+        return processoRepository.findByClienteIdCliente(idCliente);
+    }
 
-        if (!clienteRepository.existsById(idCliente)) {
-            throw new RecursoNaoEncontradoException("Cliente não encontrado");
+    private void validarDocumentoDuplicado(Cliente cliente, Long idClienteAtual) {
+
+        if (cliente.getCpf() != null && !cliente.getCpf().isBlank()) {
+            boolean cpfDuplicado = idClienteAtual == null
+                    ? clienteRepository.existsByCpf(cliente.getCpf())
+                    : clienteRepository.existsByCpfAndIdClienteNot(
+                            cliente.getCpf(), idClienteAtual);
+
+            if (cpfDuplicado) {
+                throw new RegraNegocioException("CPF já cadastrado");
+            }
         }
 
-        return processoRepository.findByClienteIdCliente(idCliente);
+        if (cliente.getCnpj() != null && !cliente.getCnpj().isBlank()) {
+            boolean cnpjDuplicado = idClienteAtual == null
+                    ? clienteRepository.existsByCnpj(cliente.getCnpj())
+                    : clienteRepository.existsByCnpjAndIdClienteNot(
+                            cliente.getCnpj(), idClienteAtual);
+
+            if (cnpjDuplicado) {
+                throw new RegraNegocioException("CNPJ já cadastrado");
+            }
+        }
     }
 }
