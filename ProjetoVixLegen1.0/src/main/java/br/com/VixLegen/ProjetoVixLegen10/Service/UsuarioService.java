@@ -33,7 +33,7 @@ public class UsuarioService {
 
     public UsuarioResponse cadastrar(UsuarioRequest request) {
 
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
+        if (usuarioRepository.existsByEmailIgnoreCase(request.getEmail())) {
             throw new RegraNegocioException("E-mail já cadastrado");
         }
 
@@ -93,7 +93,7 @@ public class UsuarioService {
         Usuario usuarioExistente = buscarEntidadePorId(id);
 
         if (!usuarioExistente.getEmail().equalsIgnoreCase(request.getEmail())
-                && usuarioRepository.existsByEmail(request.getEmail())) {
+                && usuarioRepository.existsByEmailIgnoreCase(request.getEmail())) {
 
             throw new RegraNegocioException("E-mail já cadastrado");
         }
@@ -139,7 +139,7 @@ public class UsuarioService {
 
     public UsuarioResponse buscarPorEmail(String email) {
 
-        Usuario usuario = usuarioRepository.findByEmail(email)
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() ->
                         new RecursoNaoEncontradoException("Usuário não encontrado")
                 );
@@ -187,7 +187,7 @@ public class UsuarioService {
 
     public Usuario buscarEntidadePorEmail(String email) {
 
-        return usuarioRepository.findByEmail(email)
+        return usuarioRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() ->
                         new RecursoNaoEncontradoException("Usuário não encontrado")
                 );
