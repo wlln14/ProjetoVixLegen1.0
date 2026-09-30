@@ -1,6 +1,7 @@
 package br.com.VixLegen.ProjetoVixLegen10.Exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> conflitoIntegridade(
+            DataIntegrityViolationException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(
+                        "Operação não permitida: valor duplicado "
+                                + "ou registro vinculado"
+                );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
