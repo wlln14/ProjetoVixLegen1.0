@@ -1,12 +1,13 @@
 package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
-import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
-import br.com.VixLegen.ProjetoVixLegen10.Service.UsuarioService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.UsuarioAtualizacaoRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.UsuarioRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Response.UsuarioResponse;
+import br.com.VixLegen.ProjetoVixLegen10.Service.UsuarioService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,41 +25,44 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponse> cadastrar(
             @Valid @RequestBody UsuarioRequest request) {
 
-        return ResponseEntity.ok(
-                usuarioService.cadastrar(request)
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(usuarioService.cadastrar(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarTodos() {
+    public ResponseEntity<List<UsuarioResponse>> listarTodos() {
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<UsuarioResponse> buscarPorId(
+            @PathVariable Long id) {
+
         return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> atualizar(
-             @PathVariable Long id,
-             @Valid
-            @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioResponse> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody UsuarioAtualizacaoRequest request) {
 
-        Usuario usuarioAtualizado = usuarioService.atualizar(id, usuario);
-
-        return ResponseEntity.ok(usuarioAtualizado);
+        return ResponseEntity.ok(
+                usuarioService.atualizar(id, request)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable Long id) {
+
         usuarioService.excluir(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Usuario> buscarPorEmail(
+    public ResponseEntity<UsuarioResponse> buscarPorEmail(
             @PathVariable String email) {
 
         return ResponseEntity.ok(
@@ -67,7 +71,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<Usuario> buscarPorCpf(
+    public ResponseEntity<UsuarioResponse> buscarPorCpf(
             @PathVariable String cpf) {
 
         return ResponseEntity.ok(
@@ -76,7 +80,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/ativos")
-    public ResponseEntity<List<Usuario>> listarAtivos() {
+    public ResponseEntity<List<UsuarioResponse>> listarAtivos() {
 
         return ResponseEntity.ok(
                 usuarioService.listarAtivos()
