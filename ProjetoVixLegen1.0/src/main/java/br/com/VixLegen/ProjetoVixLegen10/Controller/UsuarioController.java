@@ -1,5 +1,6 @@
 package br.com.VixLegen.ProjetoVixLegen10.Controller;
 
+import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.AlterarCategoriaUsuarioRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.UsuarioAtualizacaoRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.UsuarioRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Response.UsuarioResponse;
@@ -17,7 +18,9 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(
+            UsuarioService usuarioService) {
+
         this.usuarioService = usuarioService;
     }
 
@@ -27,28 +30,73 @@ public class UsuarioController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(usuarioService.cadastrar(request));
+                .body(
+                        usuarioService.cadastrar(request)
+                );
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponse>> listarTodos() {
-        return ResponseEntity.ok(usuarioService.listarTodos());
+    public ResponseEntity<List<UsuarioResponse>>
+    listarTodos() {
+
+        return ResponseEntity.ok(
+                usuarioService.listarTodos()
+        );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponse> buscarPorId(
             @PathVariable Long id) {
 
-        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+        return ResponseEntity.ok(
+                usuarioService.buscarPorId(id)
+        );
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponse> atualizar(
             @PathVariable Long id,
-            @Valid @RequestBody UsuarioAtualizacaoRequest request) {
+            @Valid @RequestBody
+            UsuarioAtualizacaoRequest request) {
 
         return ResponseEntity.ok(
-                usuarioService.atualizar(id, request)
+                usuarioService.atualizar(
+                        id,
+                        request
+                )
+        );
+    }
+
+    @PatchMapping("/{id}/categoria")
+    public ResponseEntity<UsuarioResponse>
+    alterarCategoria(
+            @PathVariable Long id,
+            @Valid @RequestBody
+            AlterarCategoriaUsuarioRequest request) {
+
+        return ResponseEntity.ok(
+                usuarioService.alterarCategoria(
+                        id,
+                        request.getCodigoCategoria()
+                )
+        );
+    }
+
+    @PatchMapping("/{id}/ativar")
+    public ResponseEntity<UsuarioResponse> ativar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                usuarioService.ativar(id)
+        );
+    }
+
+    @PatchMapping("/{id}/desativar")
+    public ResponseEntity<UsuarioResponse> desativar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                usuarioService.desativar(id)
         );
     }
 
@@ -58,11 +106,14 @@ public class UsuarioController {
 
         usuarioService.excluir(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<UsuarioResponse> buscarPorEmail(
+    public ResponseEntity<UsuarioResponse>
+    buscarPorEmail(
             @PathVariable String email) {
 
         return ResponseEntity.ok(
@@ -71,7 +122,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<UsuarioResponse> buscarPorCpf(
+    public ResponseEntity<UsuarioResponse>
+    buscarPorCpf(
             @PathVariable String cpf) {
 
         return ResponseEntity.ok(
@@ -80,7 +132,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/ativos")
-    public ResponseEntity<List<UsuarioResponse>> listarAtivos() {
+    public ResponseEntity<List<UsuarioResponse>>
+    listarAtivos() {
 
         return ResponseEntity.ok(
                 usuarioService.listarAtivos()

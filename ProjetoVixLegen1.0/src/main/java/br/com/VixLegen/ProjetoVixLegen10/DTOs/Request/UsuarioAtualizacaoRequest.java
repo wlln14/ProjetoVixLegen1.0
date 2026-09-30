@@ -48,10 +48,4 @@ public class UsuarioAtualizacaoRequest {
 
     @NotBlank
     private String cep;
-
-    @NotNull
-    private Boolean ativo;
-
-    @NotNull
-    private Long codigoCategoria;
 }

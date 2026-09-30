@@ -2,6 +2,7 @@ package br.com.VixLegen.ProjetoVixLegen10.Service;
 
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Request.LoginRequest;
 import br.com.VixLegen.ProjetoVixLegen10.DTOs.Response.LoginResponse;
+import br.com.VixLegen.ProjetoVixLegen10.Enums.PerfilAcesso;
 import br.com.VixLegen.ProjetoVixLegen10.Exception.CredenciaisInvalidasException;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Categoria;
 import br.com.VixLegen.ProjetoVixLegen10.Model.Usuario;
@@ -63,6 +64,9 @@ public class AuthService {
         );
 
         Categoria categoria = usuario.getCategoria();
+        PerfilAcesso perfilAcesso = categoria != null
+                ? PerfilAcesso.porNivel(categoria.getNivelAcesso())
+                : null;
 
         JwtClaimsSet.Builder claims = JwtClaimsSet.builder()
                 .issuer(ISSUER)
@@ -89,6 +93,13 @@ public class AuthService {
             );
         }
 
+        if (perfilAcesso != null) {
+            claims.claim(
+                    "role",
+                    perfilAcesso.name()
+            );
+        }
+
         String token = jwtEncoder.encode(
                 JwtEncoderParameters.from(claims.build())
         ).getTokenValue();
@@ -107,6 +118,9 @@ public class AuthService {
                         : null,
                 categoria != null
                         ? categoria.getNivelAcesso()
+                        : null,
+                perfilAcesso != null
+                        ? perfilAcesso.name()
                         : null
         );
     }
