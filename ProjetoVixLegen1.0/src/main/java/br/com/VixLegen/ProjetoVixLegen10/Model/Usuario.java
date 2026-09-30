@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -73,4 +75,16 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
+
+    @OneToMany(mappedBy = "usuarioResponsavel")
+    @JsonIgnore
+    private List<Tarefa> tarefas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
+    private List<Notificacao> notificacoes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuarioResponsavel")
+    @JsonIgnore
+    private List<Cliente> clientesResponsaveis = new ArrayList<>();
 }
