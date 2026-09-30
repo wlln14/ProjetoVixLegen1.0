@@ -3,6 +3,7 @@ package br.com.VixLegen.ProjetoVixLegen10.DTOs.Request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +24,8 @@ public class UsuarioRequest {
     private String email;
 
     @NotBlank
-    private String senhaHash;
+    @Size(min = 8, message = "A senha deve possuir no mínimo 8 caracteres")
+    private String senha;
 
     @NotBlank
     private String telefone;
@@ -54,5 +56,4 @@ public class UsuarioRequest {
 
     @NotNull
     private Long codigoCategoria;
-
 }
