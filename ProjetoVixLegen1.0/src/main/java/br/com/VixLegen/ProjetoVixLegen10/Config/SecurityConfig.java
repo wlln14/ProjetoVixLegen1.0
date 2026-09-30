@@ -74,17 +74,42 @@ public class SecurityConfig {
                                 HttpMethod.OPTIONS,
                                 "/**"
                         ).permitAll()
+
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/auth/login"
                         ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/usuarios"
-                        ).permitAll()
+
                         .requestMatchers(
                                 "/error"
                         ).permitAll()
+
+                        // permissaoVisualizar
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/**"
+                        ).hasAuthority("SCOPE_visualizar")
+
+                        // permissaoEditar
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/**"
+                        ).hasAuthority("SCOPE_editar")
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/**"
+                        ).hasAuthority("SCOPE_editar")
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/**"
+                        ).hasAuthority("SCOPE_editar")
+
+                        // permissaoExcluir
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/**"
+                        ).hasAuthority("SCOPE_excluir")
+
                         .anyRequest()
                         .authenticated()
                 )
