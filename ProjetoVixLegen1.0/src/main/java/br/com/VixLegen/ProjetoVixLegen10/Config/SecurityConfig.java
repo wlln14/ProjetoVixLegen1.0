@@ -85,26 +85,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/error"
                         ).permitAll()
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/**"
-                        ).hasAuthority("SCOPE_visualizar")
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/**"
-                        ).hasAuthority("SCOPE_excluir")
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/**"
-                        ).hasAuthority("SCOPE_editar")
-                        .requestMatchers(
-                                HttpMethod.PUT,
-                                "/**"
-                        ).hasAuthority("SCOPE_editar")
-                        .requestMatchers(
-                                HttpMethod.PATCH,
-                                "/**"
-                        ).hasAuthority("SCOPE_editar")
                         .anyRequest()
                         .authenticated()
                 )
