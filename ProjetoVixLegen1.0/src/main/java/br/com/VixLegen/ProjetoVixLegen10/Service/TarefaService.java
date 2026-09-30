@@ -11,7 +11,7 @@ import br.com.VixLegen.ProjetoVixLegen10.Repository.TarefaRepository;
 import br.com.VixLegen.ProjetoVixLegen10.Repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -31,7 +31,6 @@ public class TarefaService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // CREATE
     public Tarefa cadastrar(Tarefa tarefa) {
 
         ProcessoJuridico processo = processoRepository.findById(
@@ -44,31 +43,30 @@ public class TarefaService {
         ).orElseThrow(() ->
                 new RecursoNaoEncontradoException("Usuário responsável não encontrado"));
 
+        if (tarefa.getPrazo().isBefore(tarefa.getDataAtribuicao())) {
+            throw new RegraNegocioException(
+                    "O prazo não pode ser anterior à data de atribuição");
+        }
+
         tarefa.setProcesso(processo);
         tarefa.setUsuarioResponsavel(usuario);
 
         return tarefaRepository.save(tarefa);
     }
 
-    // READ
     public List<Tarefa> listarTodos() {
         return tarefaRepository.findAll();
     }
 
-    // READ por ID
     public Tarefa buscarPorId(Long id) {
-
         return tarefaRepository.findById(id)
                 .orElseThrow(() ->
                         new RecursoNaoEncontradoException("Tarefa não encontrada"));
     }
 
-    // UPDATE
     public Tarefa atualizar(Long id, Tarefa tarefa) {
 
-        Tarefa existente = tarefaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
+        Tarefa existente = buscarPorId(id);
 
         ProcessoJuridico processo = processoRepository.findById(
                 tarefa.getProcesso().getIdProcesso()
@@ -80,6 +78,11 @@ public class TarefaService {
         ).orElseThrow(() ->
                 new RecursoNaoEncontradoException("Usuário responsável não encontrado"));
 
+        if (tarefa.getPrazo().isBefore(tarefa.getDataAtribuicao())) {
+            throw new RegraNegocioException(
+                    "O prazo não pode ser anterior à data de atribuição");
+        }
+
         existente.setDataAtribuicao(tarefa.getDataAtribuicao());
         existente.setPrazo(tarefa.getPrazo());
         existente.setTipoTarefa(tarefa.getTipoTarefa());
@@ -90,22 +93,14 @@ public class TarefaService {
         return tarefaRepository.save(existente);
     }
 
-    // DELETE
     public void excluir(Long id) {
-
-        Tarefa tarefa = tarefaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
-
+        Tarefa tarefa = buscarPorId(id);
         tarefaRepository.delete(tarefa);
     }
 
     public Tarefa concluir(Long id) {
 
-        Tarefa tarefa = tarefaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Tarefa não encontrada"));
-
+        Tarefa tarefa = buscarPorId(id);
         tarefa.setStatus(StatusTarefa.CONCLUIDA);
 
         return tarefaRepository.save(tarefa);
@@ -116,10 +111,7 @@ public class TarefaService {
             Long idUsuario,
             Long idProcesso) {
 
-        Tarefa tarefa = tarefaRepository.findById(idTarefa)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException(
-                                "Tarefa não encontrada"));
+        Tarefa tarefa = buscarPorId(idTarefa);
 
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() ->
@@ -138,12 +130,9 @@ public class TarefaService {
         return tarefaRepository.save(tarefa);
     }
 
-    public Tarefa alterarPrazo(Long id, LocalDate novoPrazo) {
+    public Tarefa alterarPrazo(Long id, LocalDateTime novoPrazo) {
 
-        Tarefa tarefa = tarefaRepository.findById(id)
-                .orElseThrow(() ->
-                        new RecursoNaoEncontradoException(
-                                "Tarefa não encontrada"));
+        Tarefa tarefa = buscarPorId(id);
 
         if (tarefa.getStatus() == StatusTarefa.CONCLUIDA) {
             throw new RegraNegocioException(

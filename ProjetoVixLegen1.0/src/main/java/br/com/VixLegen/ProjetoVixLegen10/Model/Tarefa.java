@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tarefas")
@@ -20,10 +20,10 @@ public class Tarefa {
     private Long idTarefa;
 
     @NotNull
-    private LocalDate dataAtribuicao;
+    private LocalDateTime dataAtribuicao;
 
     @NotNull
-    private LocalDate prazo;
+    private LocalDateTime prazo;
 
     @NotBlank
     private String tipoTarefa;
